@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="silver">#BCBCBC</color>
+    <color name="red">#E61818</color>
+    <color name="blue">#334FEA</color>
+    <color name="darkred">#A12626</color>
+    <color name="darkblue">#233078</color>
+    <color name="orange">#FF5722</color>
+    <color name="gold">#FFC107</color>
+    <color name="bluegray">#6B6180</color>
+    <color name="tsilver">#A8EFEFEF</color>
+    <color name="tblack">#85000000</color>
+    <color name="tred">#8BC60B0B</color>
+    <color name="tyellow">#BAFAE53E</color>
+
+    <color name="citrine">#CDAB3A</color>
+    <color name="tourmaline">#EA39BE</color>
+    <color name="sapphire">#3EBDF6</color>
+    <color name="carnelian">#EF440E</color>
+    <color name="rhodonite">#E63E5F</color>
+    <color name="garnet">#FF0031</color>
+    <color name="sunstone">#FFB95D</color>
+    <color name="moonstone">#6FE5F3</color>
+</resources>
