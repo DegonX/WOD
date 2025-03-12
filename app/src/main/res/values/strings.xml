@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Warriors Of Deagon</string>
+    <string name="equipup">Ores and it will increase the equipment stats by a random amount, do you want to Upgrade?.</string>
+    <string name="testcode">leveluptest , leveluptest2 , leveluptest3 , addores , droptest , nompcost , lordtest , blesstest , addpots , godmode , stopmobs , alladminskills "</string>
+    <string name="gacha">you may receive epic rewards from gacha, every spin cost 10000 Ores.</string>
+    <string name="mediafolder">to play music add your MP3 files into "WOD Media" folder in your internal device, if you don\'t have the folder you can press "create media folder" to create it, game reset after adding.</string>
+
+    <string name="backstory1">Long ago dangerous creatures known as abysses have invaded our world with a goal of devouring every living on it.</string>
+    <string name="backstory2">The abysses are traveling to our world through portals made by their generals known as gate keepers.</string>
+    <string name="backstory3">We have fought hard against them, but slowly they\'ve pushed us back, it would seem like there is no hope.</string>
+    <string name="backstory4">But then, our goddess, Reian enhanced the souls of those who are capable of fighting and granted them the power of elements.</string>
+    <string name="backstory5">They are known as soul warriors, for long they\'ve fought the abysses, allowing us to live peacefully.</string>
+    <string name="backstory6">But the invasion isn\'t over yet, the world needs more warriors to keep up the fight and hopefully end this invasion.</string>
+    <string name="backstory7">And that is why you\'re here, right?, you want to become a warrior, what is your name?.</string>
+
+    <string name="backstory8">So you\'re a trainee, seem that you don\'t even have weapon yet.</string>
+    <string name="backstory9">But if you\'re skilled enough you may fight bear handed.</string>
+    <string name="backstory10">And what about elements, are you capable of using them?.</string>
+
+    <string name="backstory11">Well then, you are probably all good to go.</string>
+    <string name="backstory12">Fight bravely and get stronger, who knows maybe you\'ll be a hero one day.</string>
+    <string name="backstory13">Good luck out there.</string>
+</resources>

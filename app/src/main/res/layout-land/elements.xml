@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <TextView
+        android:id="@+id/eletit2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Select an Additional Element"
+        android:textColor="@color/white"
+        android:textSize="35sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableRow
+        android:id="@+id/tableRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eletit2">
+
+        <Button
+            android:id="@+id/elementBtn1"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/fire"
+            android:padding="7dp" />
+
+        <Button
+            android:id="@+id/elementBtn2"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/ice"
+            android:padding="7dp" />
+
+        <Button
+            android:id="@+id/elementBtn3"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/energy"
+            android:padding="7dp" />
+
+        <Button
+            android:id="@+id/elementBtn4"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/blood"
+            android:padding="7dp" />
+
+        <Button
+            android:id="@+id/elementBtn5"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/darkness"
+            android:padding="7dp" />
+
+    </TableRow>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

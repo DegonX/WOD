@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TableRow
+        android:id="@+id/effectsTR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:id="@+id/mobBurnIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/burn"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/mobFreezeIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/freeze"
+            android:visibility="gone" />
+    </TableRow>
+
+    <TextView
+        android:id="@+id/mobHPTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/tsilver"
+        android:text="100000"
+        android:textColor="@color/red"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/mobImage"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

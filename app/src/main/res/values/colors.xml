@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="silver">#BCBCBC</color>
+    <color name="red">#E61818</color>
+    <color name="blue">#334FEA</color>
+    <color name="darkred">#A12626</color>
+    <color name="darkblue">#233078</color>
+    <color name="orange">#FF5722</color>
+    <color name="gold">#FFC107</color>
+    <color name="trans">#00FF1744</color>
+    <color name="tsilver">#A8EFEFEF</color>
+    <color name="tblack">#85000000</color>
+    <color name="tred">#8BC60B0B</color>
+    <color name="tyellow">#BAFAE53E</color>
+
+    <color name="chee">#FFDD00</color>
+    <color name="inno">#FF0088</color>
+    <color name="matu">#88CCFF</color>
+    <color name="ener">#FF8822</color>
+    <color name="timi">#FFDD33</color>
+    <color name="tsun">#9955FF</color>
+    <color name="ador">#FF99EE</color>
+    <color name="devo">#FFFF33</color>
+    <color name="frie">#FF3300</color>
+    <color name="chil">#FF2255</color>
+    <color name="gent">#FFCC00</color>
+    <color name="happ">#FF0055</color>
+    <color name="kind">#33FFFF</color>
+    <color name="imma">#9933FF</color>
+    <color name="boyi">#FFAE36</color>
+    <color name="calm">#008EFF</color>
+
+</resources>

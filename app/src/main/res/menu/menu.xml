@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="HardcodedText">
+
+    <item
+        android:id="@+id/stats"
+        android:title="     Stats" />
+
+    <item
+        android:id="@+id/inventory"
+        android:title="  Inventory"/>
+
+    <item
+        android:id="@+id/skills"
+        android:title="     Skills"/>
+
+    <item
+        android:id="@+id/bless"
+        android:title="   Blesses"/>
+
+    <item
+        android:id="@+id/setting"
+        android:title="    Setting"/>
+
+    <item
+        android:id="@+id/BackToLobby"
+        android:title="      Quit" />
+</menu>
