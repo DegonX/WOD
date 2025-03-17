@@ -6,14 +6,13 @@ public class BlessesData {
         switch (name) {
             case "Attack":
             case "Defense":
-                return 0.01 * level;
+            case "Critical Damage":
+                return level;
             case "HP":
             case "MP":
                 return 100 * level;
             case "Critical Rate":
-                return 0.3 * level;
-            case "Critical Damage":
-                return level;
+                return 0.2 * level;
             case "XP Bonus":
                 return 0.02 * level;
             default:

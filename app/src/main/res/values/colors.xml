@@ -27,12 +27,12 @@
     <color name="ador">#FF99EE</color>
     <color name="devo">#FFFF33</color>
     <color name="frie">#FF3300</color>
-    <color name="chil">#FF2255</color>
+    <color name="play">#FF2255</color>
     <color name="gent">#FFCC00</color>
     <color name="happ">#FF0055</color>
-    <color name="kind">#33FFFF</color>
+    <color name="kind">#FFEE77</color>
     <color name="imma">#9933FF</color>
-    <color name="boyi">#FFAE36</color>
-    <color name="calm">#008EFF</color>
+    <color name="boyi">#FF9900</color>
+    <color name="calm">#0088FF</color>
 
 </resources>
