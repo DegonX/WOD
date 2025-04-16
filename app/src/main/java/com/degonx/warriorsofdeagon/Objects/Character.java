@@ -19,6 +19,7 @@ import com.degonx.warriorsofdeagon.Enums.AttacksEnums.AttacksType;
 import com.degonx.warriorsofdeagon.Enums.EquipmentsEnums.EquipmentsEffects;
 import com.degonx.warriorsofdeagon.Enums.EquipmentsEnums.EquipmentsEnum;
 import com.degonx.warriorsofdeagon.Enums.SkillsEnum;
+import com.degonx.warriorsofdeagon.Enums.Stats;
 import com.degonx.warriorsofdeagon.Enums.WeaponsAndElementsEnums.ElementAttacks;
 import com.degonx.warriorsofdeagon.Enums.WeaponsAndElementsEnums.Elements;
 import com.degonx.warriorsofdeagon.Enums.WeaponsAndElementsEnums.WeaponAttacks;
@@ -62,10 +63,10 @@ public class Character {
     private int charMaxMP;
     private int charHP = 1;
     private int charMP = 1;
+    private int charAttack;
     private int charDefense;
-    private int charDamage;
-    private double charCriticalRate;
-    private int charCriticalDamage;
+    private float charCriticalRate;
+    private float charCriticalDamage;
     private int charSpeed = 1;
     private int charX = 2530;
     private int charY = 1500;
@@ -83,7 +84,6 @@ public class Character {
     private int charCurrentElementIndex = 0;
     private Elements charCurrentElementType;
 
-    private int activeBlessCounter = 0;
     private int activeBuffSkillsCounter = 0;
 
     private boolean charMoving = false;
@@ -93,18 +93,20 @@ public class Character {
 
     private final Equipments[] charEquippedWeapons = new Equipments[3];
     private final Equipments[] charEquippedEquipments = new Equipments[9];
-    private final int[] equipAdd = new int[4];//equipAdd - DMG + DEF + HP + MP
+    private final int[] equipAdd = new int[4];//equipAdd - ATK + DEF + HP + MP
 
-    private int[][] charBlesses; //charBlesses - level + times
-    private final int[] charBlessUse = new int[2];//blessUse - blessusepoints + blessuses;
-    private final double[] blessesAdd = new double[7];//blessesAdd - DMG + DEF + HP + MP + CRITRATE + CRITDMG + XP
+    private int activeBlessCount = 0;
+    private int[] charBlessesLevels;
+    private int[] charActiveBlessesIndexes;
+    private final int[] blessesStats = new int[5];//blessesStats - ATK + DEF + HP + MP + XP
+    private final float[] blessesCriticalStats = new float[5];//blessesCriticalAdd - CRITRATE + CRITDMG
 
     private final int[] charLordState = new int[2];//charLordState - process + time
-    private final int[] lordAdd = new int[6];//lordAdd - DMG + DEF + HP + MP + CRITRATE + CRITDMG
+    private final int[] lordAdd = new int[6];//lordAdd - ATK + DEF + HP + MP + CRITRATE + CRITDMG
 
     private final int[] charPassiveSkillsAdd = new int[11];
     private final int[][] charActiveSkillsAdd = new int[4][2];//activeSkillsAdd - power up + dmg up + def up + crit up / times
-    private final int[] GMSkills = new int[7];
+    private final int[] GMSkills = new int[6];
 
     private AreaEffects areaEffect;
     private int areaEffectTime = 0;
@@ -162,8 +164,9 @@ public class Character {
 
         //load character date from database
         charElements = charDB.getCharacterElements(charID);
+        charActiveBlessesIndexes = charDB.getCharacterBlessesIndexes(charID);
         charSkillsList = skillDB.getCharSkills(charID);
-        charBlesses = blessDB.getCharBlesses(charID);
+        charBlessesLevels = blessDB.getCharBlesses(charID);
 
         //get character equipments from database and sort them
         sortEquipments(equipmentDB.getCharEquipments(charID));
@@ -179,7 +182,7 @@ public class Character {
         characterStatsUI = new CharacterStatsUI(game, this, charSkillsList.get(0), charElements);
         characterInventoryUI = new CharacterInventoryUI(game, this, charEquipments, charEquippedEquipments, charEquippedWeapons);
         characterSkillsUI = new CharacterSkillsUI(game, this);
-        characterBlessesUI = new CharacterBlessesUI(game, this, charBlesses);
+        characterBlessesUI = new CharacterBlessesUI(game, this, charBlessesLevels, charActiveBlessesIndexes);
 
         //load and set equipments and skills
         addEquipmentsStats();
@@ -203,12 +206,17 @@ public class Character {
         //set joystick
         gameUI.joyStick();
 
+        //add active blesses stats
+        for (int b = 0; b < 4; b++)
+            if (charActiveBlessesIndexes[b] != -1)
+                blessActions(charActiveBlessesIndexes[b], 1, b, false);
+
         //send the user to choose additional element if not selected yet
         if (charLevel >= 50 && charElements.size() == 2)
             gameUI.selectAdditionalElement(charElements);
 
         //set HP and MP and their texts
-        addCharHPMP(statsMixer(3), statsMixer(4));
+        addCharHPMP(statsMixer(Stats.HP), statsMixer(Stats.MP));
         standHealing.start();
 
         //delay to get accurate sizes(height and width)
@@ -221,8 +229,8 @@ public class Character {
     public void setWeapon(int weaponInd) {
         charCurrentWeaponIndex = weaponInd;
 
-        //set weapon and his damage from mastery and base
-        int equippedWeaponDamage;
+        //set weapon and his attack from mastery and base
+        int equippedWeaponAttack;
         int weaponMasteryLevel;
 
         //if weapon is an equipped weapon
@@ -234,17 +242,17 @@ public class Character {
             //get weapon skill mastery
             weaponMasteryLevel = getWeaponMasteryLevel(charCurrentWeaponType.weaponSkill) * 5;
 
-            //get weapon damage
-            equippedWeaponDamage = charEquippedWeapons[charCurrentWeaponIndex - 1].equipmentDMG;
+            //get weapon attack
+            equippedWeaponAttack = charEquippedWeapons[charCurrentWeaponIndex - 1].equipmentATK;
         } else {
 
             //check if weapon is fists or blood weapons and set their damage
             if (charCurrentWeaponIndex == 0) {
                 charCurrentWeaponType = Weapons.Fists;
-                equippedWeaponDamage = 25 * (1 + charLevel / 10);
+                equippedWeaponAttack = 25 * (1 + charLevel / 10);
             } else {
                 charCurrentWeaponType = Weapons.Blood_Weapons;
-                equippedWeaponDamage = 40 * (1 + charLevel / 10);
+                equippedWeaponAttack = 40 * (1 + charLevel / 10);
             }
 
             //get weapon skill mastery
@@ -252,12 +260,12 @@ public class Character {
         }
 
         //set weapon attack bonus damage
-        WeaponAttacks.weaponDamage = equippedWeaponDamage;
+        WeaponAttacks.weaponDamage = equippedWeaponAttack;
 
         //set weapon mastery bonus damage
-        WeaponAttacks.bonusDamage = (float) ((1 + weaponMasteryLevel / 100) * (double) (1 + charLevel / 10));
+        WeaponAttacks.bonusDamage = ((1 + weaponMasteryLevel / 100f) * (float) (1 + charLevel / 10));
 
-        Log.i(TAG, "weapon:" + charCurrentWeaponType + ", weapon mastery:" + getWeaponMasteryLevel(charCurrentWeaponType.weaponSkill) + ", weapon damage:" + equippedWeaponDamage);
+        Log.i(TAG, "weapon:" + charCurrentWeaponType + ", weapon mastery:" + getWeaponMasteryLevel(charCurrentWeaponType.weaponSkill) + ", weapon damage:" + equippedWeaponAttack);
 
         //set weapon sound
         game.setWeaponSound(charCurrentWeaponType);
@@ -574,7 +582,7 @@ public class Character {
         //add equipped equipments stats
         for (Equipments equipment : charEquippedEquipments) {
             if (equipment != null) {
-                equipAdd[0] += equipment.equipmentDMG;
+                equipAdd[0] += equipment.equipmentATK;
                 equipAdd[1] += equipment.equipmentDEF;
                 equipAdd[2] += equipment.equipmentHP;
                 equipAdd[3] += equipment.equipmentMP;
@@ -622,7 +630,7 @@ public class Character {
         equipmentDB.updateEquipmentSlot(equipment.equipmentPK, -1, equipmentSlotIndex);
 
         //add the equip stats
-        equipAdd[0] += equipment.equipmentDMG;
+        equipAdd[0] += equipment.equipmentATK;
         equipAdd[1] += equipment.equipmentDEF;
         equipAdd[2] += equipment.equipmentHP;
         equipAdd[3] += equipment.equipmentMP;
@@ -691,7 +699,7 @@ public class Character {
 
             //remove equipped armor adds
             if (!unequippedEquipment.equipmentType.contains("weapon")) {
-                equipAdd[0] -= unequippedEquipment.equipmentDMG;
+                equipAdd[0] -= unequippedEquipment.equipmentATK;
                 equipAdd[1] -= unequippedEquipment.equipmentDEF;
                 equipAdd[2] -= unequippedEquipment.equipmentHP;
                 equipAdd[3] -= unequippedEquipment.equipmentMP;
@@ -867,9 +875,6 @@ public class Character {
                     case "LORD_TEST":
                         GMSkills[2] = 10;
                         break;
-                    case "BLESS_TEST":
-                        GMSkills[3] = 1;
-                        break;
                 }
             }
         }
@@ -1013,139 +1018,118 @@ public class Character {
         }
     };
 
-    //check if bless can be used
-    public void attemptToUseBless(int bless) {
-        if (charBlessUse[1] > 0 && charBlesses[bless][0] > 0 && charBlesses[bless][1] <= 0 && activeBlessCounter < 5) {
-            charBlessUse[1]--;
-            blessActions(bless, 1);
-        } else {
-            if (charBlessUse[1] <= 0)
-                Toasts.makeToast(game, "no bless credits to use");
-            else if (charBlesses[bless][0] <= 0)
-                Toasts.makeToast(game, "you need to level up this bless first");
-            else if (charBlesses[bless][1] > 0)
-                Toasts.makeToast(game, "bless is already activated");
-            else if (activeBlessCounter >= 7)
-                Toasts.makeToast(game, "cannot use more than 5 blesses at once");
-        }
-    }
-
-    //activate or deactivate blesses and add or remove their effects(state =  1 activate, -1 deactivate)
-    private void blessActions(int blessInd, int state) {
-        double bhp = 0, bmp = 0;
+    //activate or deactivate blesses(state =  1 activate, -1 deactivate)
+    public void blessActions(int blessIndex, int adder, int spotIndex, boolean updateDB) {
 
         //get the bless
-        Blesses bless = Blesses.values()[blessInd];
+        Blesses bless = Blesses.values()[blessIndex];
 
-        //first bless add
-        switch (bless.Add1) {
-            case "Attack":
-                blessesAdd[0] += state * BlessesData.getBlessBaseValue("Attack", charBlesses[blessInd][0]);
-                break;
-            case "Defense":
-                blessesAdd[1] += state * BlessesData.getBlessBaseValue("Defense", charBlesses[blessInd][0]);
-                break;
-            case "HP":
-                bhp = state * BlessesData.getBlessBaseValue("HP", charBlesses[blessInd][0]);
-                blessesAdd[2] += bhp;
-                break;
-            case "MP":
-                bmp = state * BlessesData.getBlessBaseValue("MP", charBlesses[blessInd][0]);
-                blessesAdd[3] += bmp;
-                break;
-        }
+        float stat;
 
-        //second bless add
-        switch (bless.Add2) {
-            case "Defense":
-                blessesAdd[1] += state * BlessesData.getBlessBaseValue("Defense", charBlesses[blessInd][0]);
-                break;
-            case "HP":
-                bhp = state * BlessesData.getBlessBaseValue("HP", charBlesses[blessInd][0]);
-                blessesAdd[2] += bhp;
-                break;
-            case "MP":
-                bmp = state * BlessesData.getBlessBaseValue("MP", charBlesses[blessInd][0]);
-                blessesAdd[3] += bmp;
-                break;
-            case "Critical Rate":
-                blessesAdd[4] += state * BlessesData.getBlessBaseValue("Critical Rate", charBlesses[blessInd][0]);
-                break;
-            case "Critical Damage":
-                blessesAdd[5] += state * BlessesData.getBlessBaseValue("Critical Damage", charBlesses[blessInd][0]);
-                break;
-            case "XP Bonus":
-                blessesAdd[6] += state * BlessesData.getBlessBaseValue("XP Bonus", charBlesses[blessInd][0]);
-                break;
-        }
+        //add bless stats
+        for (Stats s : bless.blessStats) {
 
-        //bless start
-        if (state == 1) {
-            characterBlessesUI.showBlessesPage();
-            charBlesses[blessInd][1] = 120;
-            activeBlessCounter++;
-            Toasts.makeToast(game, "bless activated");
+            //get the stat multiplied by the level
+            stat = BlessesData.getBlessStats(s, charBlessesLevels[blessIndex]);
 
-            //set hp\mp and restore if bless add to them
-            if (bhp > 0 || bmp > 0)
-                addCharHPMP((int) bhp, (int) bmp);
-
-            //bless end
-        } else if (state == -1) {
-            activeBlessCounter--;
-            gameUI.setChat(bless + "'s bless ended");
-
-            //remove hp\mp if bless add to them
-            if (bhp < 0 || bmp < 0)
-                addCharHPMP(0, 0);
-        }
-
-        characterBlessesUI.setActiveBlessesText(activeBlessCounter, blessesAdd);
-    }
-
-    //runnable for blesses
-    private final Runnable blessesRun = new Runnable() {
-        @Override
-        public void run() {
-            if (activeBlessCounter > 0 && !game.Pause) {
-
-                //check if a blesses time is out and disable it
-                for (int bt = 0; bt < charBlesses.length; bt++)
-                    if (--charBlesses[bt][1] == 0)
-                        blessActions(bt, -1);
-
-                charActionsHandler.postDelayed(blessesRun, 1000);
+            //add the stat
+            switch (s) {
+                case ATTACK:
+                    blessesStats[0] += stat * adder;
+                    break;
+                case DEFENCE:
+                    blessesStats[1] += stat * adder;
+                    break;
+                case HP:
+                    blessesStats[2] += stat * adder;
+                    addCharHP(0);
+                    break;
+                case MP:
+                    blessesStats[3] += stat * adder;
+                    addCharMP(0);
+                    break;
+                case BONUS_XP:
+                    blessesStats[4] += stat * adder;
+                    break;
+                case CRITICAL_RATE:
+                    blessesCriticalStats[0] += stat * adder;
+                    break;
+                case CRITICAL_DAMAGE:
+                    blessesCriticalStats[1] += stat * adder;
+                    break;
             }
         }
-    };
+
+        if (adder == 1) {
+            //add the bless index to activated array
+            charActiveBlessesIndexes[spotIndex] = blessIndex;
+            activeBlessCount++;
+        } else if (adder == -1) {
+            //remove the bless index from activated array
+            charActiveBlessesIndexes[spotIndex] = -1;
+            activeBlessCount--;
+            blessIndex = -1;
+        }
+
+        //update database if the bless been activated \ deactivated
+        if (updateDB)
+            charDB.updateBlesses(charID, blessIndex, spotIndex + 1);
+
+        //set active blesses stats text
+        characterBlessesUI.setActiveBlessesText(activeBlessCount, blessesStats, blessesCriticalStats);
+    }
 
     //level up chosen bless
-    public void levelUpBless(int bless, TextView infoText) {
-        //check if leveling possible
-        if (charBlesses[bless][0] < 30 && charBlessPoints >= BlessesData.blessLevelCost(charBlesses[bless][0])) {
-            charBlessPoints -= BlessesData.blessLevelCost(charBlesses[bless][0]);
-            charDB.updateBlessPoints(charID, charBlessPoints);
-            blessDB.levelupBless(charID, bless + 1, ++charBlesses[bless][0]);
+    public void levelUpBless(int blessIndex, TextView infoText) {
+        //check if bless level is not max
+        if (charBlessesLevels[blessIndex] < 50) {
 
-            //update bless view
-            characterBlessesUI.setBlessAfterLevelUp(bless, charBlesses[bless][0], infoText);
-        } else if (charBlesses[bless][0] >= 30)
+            //make the cost for bless level up
+            int levelUpCost = (100 + (50 * charBlessesLevels[blessIndex])) * (1 + (charBlessesLevels[blessIndex] / 10));
+
+            //level up bless if possible
+            if (charBlessPoints >= levelUpCost) {
+
+                //check if the bless is activate and deactivate it (to update stats)
+                boolean isActive = false;
+                int spot = -1;
+
+                //deactivate bless
+                for (int b = 0; b < 4; b++)
+                    if (charActiveBlessesIndexes[b] == blessIndex) {
+                        isActive = true;
+                        spot = b;
+                        break;
+                    }
+
+                //deactivate the bless
+                if (isActive)
+                    blessActions(blessIndex, -1, spot, false);
+
+                //remove the level up cost
+                charBlessPoints -= levelUpCost;
+                charDB.updateBlessPoints(charID, charBlessPoints);
+
+                //level up the bless
+                blessDB.levelUpBless(charID, blessIndex + 1, ++charBlessesLevels[blessIndex]);
+
+                //reactivate the bless if it was activated
+                if (isActive)
+                    blessActions(blessIndex, 1, spot, false);
+
+                //update bless view
+                characterBlessesUI.setBlessAfterLevelUp(blessIndex, charBlessesLevels[blessIndex], infoText);
+
+            } else
+                Toasts.makeToast(game, "you don't have enough point you level up");
+        } else
             Toasts.makeToast(game, "bless is maxed");
-        else
-            Toasts.makeToast(game, "you don't have enough point you level up");
-
     }
 
     private void addBlessPoints() {
-        //add blessuse points and convert when reach 30
-        if (++charBlessUse[0] >= 30 || GMSkills[3] > 0) {
-            charBlessUse[1]++;
-            charBlessUse[0] -= 30;
-        }
-
         //chance to give character bless points(used to level up bless)
-        if (charRan.nextInt(100) + 1 + GMSkills[3] >= 50) {
-            charBlessPoints += (charRan.nextInt(51) + 1) * (1 + GMSkills[3]);
+        if (charRan.nextInt(100) >= 40) {
+            charBlessPoints += (charRan.nextInt(51) + 1);
             charDB.updateBlessPoints(charID, charBlessPoints);
         }
     }
@@ -1166,7 +1150,7 @@ public class Character {
 
     public void addCharXP(int XPMulti) {
         //make xp base on character level xp multiplier and blass if activated
-        int XP = (int) ((10 + charLevel * 3 * XPMulti) * (1 + blessesAdd[6]));
+        int XP = ((10 + charLevel * 3 * XPMulti) * (1 + statsMixer(Stats.BONUS_XP)));
 
         //limit character to level 200
         if (charLevel < 200) {
@@ -1204,7 +1188,7 @@ public class Character {
 
         //reset character stats
         loadCharStats();
-        addCharHPMP(statsMixer(3), statsMixer(4));
+        addCharHPMP(statsMixer(Stats.HP), statsMixer(Stats.MP));
 
         //set level in mobs class
         Mobs.setCharLevel(charLevel);
@@ -1239,7 +1223,7 @@ public class Character {
 
             //check if dropped item is armor or weapon and generate random stats when pickup
             if (equipmentType.contains("weapon"))
-                EqDmg = charRan.nextInt(21) + equipment.getEquipmentBaseDamage();
+                EqDmg = charRan.nextInt(21) + equipment.getEquipmentBaseAttack();
 
             else {
                 //add defense,hp,mp to armors
@@ -1251,7 +1235,7 @@ public class Character {
 
                 //add damage to gloves
                 if (equipmentType.contains("Gloves"))
-                    EqDmg = charRan.nextInt(11) + equipment.getEquipmentBaseDamage();
+                    EqDmg = charRan.nextInt(11) + equipment.getEquipmentBaseAttack();
             }
 
             //add the item to character inventory
@@ -1267,12 +1251,12 @@ public class Character {
 
     private void loadCharStats() {
         //set character stats by level
-        charDamage = 30 * charLevel + (charPassiveSkillsAdd[0] * (1 + charLevel / 10));
+        charAttack = 30 * charLevel + (charPassiveSkillsAdd[0] * (1 + charLevel / 10));
         charDefense = 30 * charLevel + (charPassiveSkillsAdd[1] * (1 + charLevel / 10));
         charMaxHP = 300 * charLevel + (charPassiveSkillsAdd[2] * (1 + charLevel / 10));
         charMaxMP = 200 * charLevel + (charPassiveSkillsAdd[3] * (1 + charLevel / 10));
-        charCriticalRate = 0.3 * charLevel;
-        charCriticalDamage = charLevel;
+        charCriticalRate = 0.2f * charLevel;
+        charCriticalDamage = 0.5f * charLevel;
         if (charCriticalRate > 100)
             charCriticalRate = 100;
 
@@ -1302,23 +1286,27 @@ public class Character {
     }
 
     //return total stat value
-    public int statsMixer(int stat) {
-        if (stat == 1)
-            return charDamage + equipAdd[0] + lordAdd[0] + charActiveSkillsAdd[0][0] + charActiveSkillsAdd[1][0];
-        else if (stat == 2)
-            return (int) ((charDefense + equipAdd[1] + lordAdd[1] + charActiveSkillsAdd[0][0] + charActiveSkillsAdd[2][0]) * (1 + blessesAdd[1]));
-        else if (stat == 3)
-            return charMaxHP + equipAdd[2] + lordAdd[2] + (int) blessesAdd[2];
-        else if (stat == 4)
-            return charMaxMP + equipAdd[3] + lordAdd[3] + (int) blessesAdd[3];
-        else if (stat == 5)
-            return charCriticalDamage + lordAdd[5] + (int) blessesAdd[5];
+    public int statsMixer(Stats stat) {
+        if (stat == Stats.ATTACK)
+            return charAttack + equipAdd[0] + lordAdd[0] + blessesStats[0] + charActiveSkillsAdd[0][0] + charActiveSkillsAdd[1][0];
+        else if (stat == Stats.DEFENCE)
+            return charDefense + equipAdd[1] + lordAdd[1] + blessesStats[1] + charActiveSkillsAdd[0][0] + charActiveSkillsAdd[2][0];
+        else if (stat == Stats.HP)
+            return charMaxHP + equipAdd[2] + lordAdd[2] + blessesStats[2];
+        else if (stat == Stats.MP)
+            return charMaxMP + equipAdd[3] + lordAdd[3] + blessesStats[3];
+        else if (stat == Stats.BONUS_XP)
+            return blessesStats[4];
         return -1;
     }
 
     //return critical rate value
-    public double criticalRateMixer() {
-        return charCriticalRate + lordAdd[4] + blessesAdd[4] + charActiveSkillsAdd[3][0];
+    public float criticalMixer(Stats stat) {
+        if (stat == Stats.CRITICAL_RATE)
+            return charCriticalRate + lordAdd[4] + blessesCriticalStats[0] + charActiveSkillsAdd[3][0];
+        else if (stat == Stats.CRITICAL_DAMAGE)
+            return charCriticalDamage + lordAdd[5] + blessesCriticalStats[1];
+        return -1;
     }
 
     public void addCharHPMP(int HP, int MP) {
@@ -1328,17 +1316,17 @@ public class Character {
 
     //change character hp and update hp text
     public void addCharHP(int addHP) {
-        if (GMSkills[4] == 1)
+        if (GMSkills[3] == 1)
             addHP = 0;
-        else if (GMSkills[6] == 1)
+        else if (GMSkills[5] == 1)
             addHP = -1;
 
         charHP += addHP;
 
         if (charHP <= 0)
             charISDead();
-        else if (charHP > statsMixer(3))
-            charHP = statsMixer(3);
+        else if (charHP > statsMixer(Stats.HP))
+            charHP = statsMixer(Stats.HP);
 
         charUI.updateHPText();
     }
@@ -1349,8 +1337,8 @@ public class Character {
 
         if (charMP < 0)
             charMP = 0;
-        else if (charMP > statsMixer(4))
-            charMP = statsMixer(4);
+        else if (charMP > statsMixer(Stats.MP))
+            charMP = statsMixer(Stats.MP);
 
         charUI.mpChecker(charCurrentWeaponType.Attacks, 1, 4);
         charUI.mpChecker(charCurrentElementType.Attacks, 4, 7);
@@ -1438,8 +1426,6 @@ public class Character {
     public void resumeWhenUnpause() {
         if (charLordState[1] != 0)
             lordModeRun.run();
-        if (activeBlessCounter > 0)
-            blessesRun.run();
         if (areaEffectTime > 0)
             areaEffectRun.run();
         if (activeBuffSkillsCounter > 0)
@@ -1497,10 +1483,6 @@ public class Character {
 
     public void characterMovement(int way) {
         charUI.characterMovement(way);
-    }
-
-    public double getBlessDamage() {
-        return 1 + blessesAdd[1];
     }
 
     public void startStandHealing() {
@@ -1647,15 +1629,15 @@ public class Character {
         return charDefense;
     }
 
-    public int getCharDamage() {
-        return charDamage;
+    public int getCharAttack() {
+        return charAttack;
     }
 
-    public double getCharCriticalRate() {
+    public float getCharCriticalRate() {
         return charCriticalRate;
     }
 
-    public int getCharCriticalDamage() {
+    public float getCharCriticalDamage() {
         return charCriticalDamage;
     }
 
@@ -1685,10 +1667,6 @@ public class Character {
 
     public List<Skills> getCharTabSkills() {
         return charTabSkills;
-    }
-
-    public int getCharBlessUse() {
-        return charBlessUse[1];
     }
 
     public int getEquipAdd(int ind) {

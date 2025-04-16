@@ -15,11 +15,11 @@ public class Equipments {
     public int equipmentUpgradeTimes;
     public int equipmentHP;
     public int equipmentMP;
-    public int equipmentDMG;
+    public int equipmentATK;
     public int equipmentDEF;
     public EquipmentsEffects equipmentEffect;
 
-    public Equipments(int equipmentPK, String equipmentID, int equipmentEquippedSlot, int equipmentInventorySlot, int equipmentUpgradeTimes, int equipmentHP, int equipmentMP, int equipmentDMG, int equipmentDEF) {
+    public Equipments(int equipmentPK, String equipmentID, int equipmentEquippedSlot, int equipmentInventorySlot, int equipmentUpgradeTimes, int equipmentHP, int equipmentMP, int equipmentATK, int equipmentDEF) {
         this.equipmentPK = equipmentPK;
         this.equipmentID = equipmentID;
         this.equipmentEquippedSlot = equipmentEquippedSlot;
@@ -27,7 +27,7 @@ public class Equipments {
         this.equipmentUpgradeTimes = equipmentUpgradeTimes;
         this.equipmentHP = equipmentHP;
         this.equipmentMP = equipmentMP;
-        this.equipmentDMG = equipmentDMG;
+        this.equipmentATK = equipmentATK;
         this.equipmentDEF = equipmentDEF;
         equipmentType = EquipmentsEnum.valueOf(equipmentID).getEquipmentType();
         equipmentEffect = EquipmentsEnum.valueOf(equipmentID).getEquipmentEffects();

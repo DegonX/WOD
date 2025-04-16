@@ -2,18 +2,24 @@ package com.degonx.warriorsofdeagon.UI;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.degonx.warriorsofdeagon.Enums.Blesses;
+import com.degonx.warriorsofdeagon.Enums.Stats;
 import com.degonx.warriorsofdeagon.Game;
 import com.degonx.warriorsofdeagon.GameData.BlessesData;
 import com.degonx.warriorsofdeagon.Objects.Character;
 import com.degonx.warriorsofdeagon.R;
+import com.degonx.warriorsofdeagon.VisionAndSound.Toasts;
 
 import java.util.Locale;
 
@@ -21,127 +27,209 @@ import java.util.Locale;
 public class CharacterBlessesUI {
 
 
-    private final TextView blessPointTxt, blessCreditsTxt, activeBlessInfo;
+    private final TextView blessPointTxt, activeBlessInfo;
     private final ConstraintLayout blessesLay;
     private final LinearLayout blessesScroll;
     private final Button[][] blessesBtn;
 
+    private final int[] activeBlessesIndexes;
+
     private final Character Char;
     private final Game game;
 
-    public CharacterBlessesUI(Game game, Character Char, int[][] blesses) {
+    public CharacterBlessesUI(Game game, Character Char, int[] blessesLevels, int[] activeBlesses) {
         this.game = game;
         this.Char = Char;
+        this.activeBlessesIndexes = activeBlesses;
 
         //create buttons to use and level up
-        blessesBtn = new Button[blesses.length][2];
+        blessesBtn = new Button[blessesLevels.length][2];
 
         //load all blesses page view
         blessesLay = game.findViewById(R.id.blessesL);
         blessPointTxt = game.findViewById(R.id.BPointsT);
-        blessCreditsTxt = game.findViewById(R.id.USEPointsT);
         blessesScroll = game.findViewById(R.id.blessesScroll);
         activeBlessInfo = game.findViewById(R.id.activeBlessInfo);
 
         //create blesses views
-        for (int b = 0; b < blesses.length; b++)
-            setBlessInBlessesPage(b, blesses[b][0]);
+        for (int b = 0; b < blessesLevels.length; b++)
+            setBlessInBlessesPage(b, blessesLevels, Blesses.values()[b]);
     }
 
     //set blesses views
-    private void setBlessInBlessesPage(int blessInd, int blessLV) {
+    private void setBlessInBlessesPage(int blessIndex, int[] blessLevel, Blesses bless) {
         //create layout and textview for each bless
         LinearLayout newBlessLay = new LinearLayout(game);
         newBlessLay.setOrientation(LinearLayout.VERTICAL);
         blessesScroll.addView(newBlessLay);
         TextView blessInfo = new TextView(game);
         newBlessLay.addView(blessInfo);
-        blessInfo.setTextSize(25);
+
+        //set textview
+        blessInfo.setTextSize(18);
         blessInfo.setTextColor(Color.BLACK);
-
-        //get bless by index
-        Blesses bless = Blesses.values()[blessInd];
-
-        //set bless text and background color
-        setBlessText(blessInfo, bless, blessLV);
+        blessInfo.setPadding(16, 16, 16, 16);
         blessInfo.setBackgroundResource(bless.Color);
+        setBlessText(blessInfo, bless, blessLevel[blessIndex]);
 
-        //create and set bless use button
-        final int finalInd = blessInd;
+        //create and set bless active button
+        blessesBtn[blessIndex][0] = new Button(game);
+        newBlessLay.addView(blessesBtn[blessIndex][0]);
+
+        //blesses layout views in activated
+        if (getBlessIndex(blessIndex) > -1) {
+            blessesBtn[blessIndex][0].setText("Deactivate");
+            blessInfo.setBackground(getBorder(bless.Color, true));
+        } else
+            blessesBtn[blessIndex][0].setText("Activate");
+
+        //activate \ deactivate the bless button
+        blessesBtn[blessIndex][0].setOnClickListener(view -> {
+            if (blessLevel[blessIndex] > 0)
+                activateButtonAction(blessIndex, blessInfo, bless.Color);
+            else
+                Toasts.makeToast(game, "you need to level up this bless first");
+        });
 
         //create and set bless level up button
-        blessesBtn[blessInd][0] = new Button(game);
-        newBlessLay.addView(blessesBtn[blessInd][0]);
-        blessesBtn[blessInd][0].setText("Use");
-        blessesBtn[blessInd][0].setOnClickListener(view -> Char.attemptToUseBless(finalInd));
-
-        //create and set bless level up button
-        if (blessLV < 30) {
-            blessesBtn[blessInd][1] = new Button(game);
-            newBlessLay.addView(blessesBtn[blessInd][1]);
-            blessesBtn[blessInd][1].setText("Level up Bless\n(" + BlessesData.blessLevelCost(blessLV) + ")");
-            blessesBtn[blessInd][1].setOnClickListener(view -> Char.levelUpBless(finalInd, blessInfo));
+        if (blessLevel[blessIndex] < 50) {
+            blessesBtn[blessIndex][1] = new Button(game);
+            newBlessLay.addView(blessesBtn[blessIndex][1]);
+            blessesBtn[blessIndex][1].setText("Level up Bless\n(" + (100 + (50 * blessLevel[blessIndex])) * (1 + (blessLevel[blessIndex] / 10)) + ")");
+            blessesBtn[blessIndex][1].setOnClickListener(view -> Char.levelUpBless(blessIndex, blessInfo));
         }
     }
 
-    private void setBlessText(TextView blessInfo, Blesses bless, int blessLV) {
+    public void activateButtonAction(int blessIndex, TextView blessInfo, int color) {
+        //get the bless index if active(-1 is not activate)
+        int activeSlot = getBlessIndex(blessIndex);
 
-        //make the text of the bless
-        String blessInfoStr = "    " + bless;
-        blessInfoStr += "\nLv.:" + blessLV + "\n";
+        //if bless is activate
+        if (activeSlot != -1) {
+            //deactivate the bless
+            Char.blessActions(blessIndex, -1, activeSlot, true);
 
-        //bless 1st add
-        String add = bless.Add1;
-        if (add.equals("Attack") || add.equals("Defense"))
-            blessInfoStr += add + ":" + (int) (BlessesData.getBlessBaseValue(add, blessLV) * 100) + " \n";
-        else
-            blessInfoStr += add + ":" + (int) BlessesData.getBlessBaseValue(add, blessLV) + " \n";
+            //set active button text to activate
+            blessesBtn[blessIndex][0].setText("Activate");
 
+            //remove red border
+            blessInfo.setBackground(getBorder(color, false));
+        } else {
 
-        //bless 2nd add
-        add = bless.Add2;
-        if (!add.equals("Critical Rate") && !add.equals("XP Bonus")) {
+            //get empty spot for the bless(-1 no empty spot)
+            int spot = getEmptyBlessSpot();
 
-            if (add.equals("Defense"))
-                blessInfoStr += add + ":" + (int) (BlessesData.getBlessBaseValue(add, blessLV) * 100) + " ";
-            else
-                blessInfoStr += add + ":" + (int) BlessesData.getBlessBaseValue(add, blessLV) + " ";
+            if (spot != -1) {
+                //activate bless
+                Char.blessActions(blessIndex, 1, getEmptyBlessSpot(), true);
 
-        } else
-            blessInfoStr += add + ":" + String.format(Locale.ENGLISH, "%.2f", (BlessesData.getBlessBaseValue(add, blessLV))) + " ";
+                //set active button text to deactivate
+                blessesBtn[blessIndex][0].setText("Deactivate");
 
+                //add red border
+                blessInfo.setBackground(getBorder(color, true));
+            } else {
+                Toasts.makeToast(game, "cannot use more than 4 blesses at once");
+            }
+        }
+    }
+
+    private void setBlessText(TextView blessInfo, Blesses bless, int blessLevel) {
+        //create string builder and the bless name and level
+        StringBuilder blessInfoStr = new StringBuilder("    " + bless);
+        blessInfoStr.append("\nLv.:").append(blessLevel);
+
+        //get bless stats
+        Stats[] blessStats = bless.blessStats;
+
+        float stat;
+
+        for (Stats s : blessStats) {
+            //get the stat multiplied by the level
+            stat = BlessesData.getBlessStats(s, blessLevel);
+
+            //add the stat to the text
+            if (s.equals(Stats.ATTACK) || s.equals(Stats.DEFENCE) || s.equals(Stats.HP) || s.equals(Stats.MP))
+                blessInfoStr.append("\n").append(s.statName).append(":").append((int) stat);
+            else if (s.equals(Stats.CRITICAL_RATE) || s.equals(Stats.CRITICAL_DAMAGE))
+                blessInfoStr.append("\n").append(s.statName).append(":").append(String.format(Locale.ENGLISH, "%.2f", stat)).append("%");
+            else if (s.equals(Stats.BONUS_XP))
+                blessInfoStr.append("\n").append(s.statName).append(":").append((int) stat).append("%");
+        }
 
         //set the text into bless text view
         blessInfo.setText(blessInfoStr);
     }
 
-    //show blesses page and update points
-    public void showBlessesPage() {
-        blessesLay.setVisibility(View.VISIBLE);
-        blessCreditsTxt.setText("Use Points:" + Char.getCharBlessUse());
-        blessPointTxt.setText("Bless Points:" + Char.getCharBlessPoints());
+    //create \ remove border around activated blesses
+    private Drawable getBorder(int originalBackgroundColor, boolean addBorder) {
+        //create the original background
+        Drawable backgroundDrawable = ContextCompat.getDrawable(game, originalBackgroundColor);
+
+        if (addBorder) {
+            //create the border
+            GradientDrawable border = new GradientDrawable();
+            border.setColor(Color.TRANSPARENT);
+            border.setStroke(12, Color.GREEN);
+
+            //combine border and background
+            LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{border, backgroundDrawable});
+            layerDrawable.setLayerInset(1, 12, 12, 12, 12); // Padding to show border
+
+            return layerDrawable;
+        } else
+            //remove border
+            return backgroundDrawable;
     }
 
-    //update bless after been leveled
-    public void setBlessAfterLevelUp(int blessInd, int blessLV, TextView blessInfo) {
+    //set text of activated blesses
+    public void setActiveBlessesText(int active, int[] blessesStats, float[] blessesCriticalStats) {
+        //format float values to prevent inaccurate text values
+        String formattedRate = String.format(Locale.US, "%.1f", blessesCriticalStats[0]);
+        String formattedDamage = String.format(Locale.US, "%.1f", blessesCriticalStats[1]);
+
+        //set text
+        activeBlessInfo.setText("Active blesses:" + active + "\nattack:" + blessesStats[0] + ", defense:" + blessesStats[1] +
+                ", hp:" + blessesStats[2] + ", mp:" + blessesStats[3] + "\ncritical rate:" + formattedRate +
+                ", critical damage:" + formattedDamage + ", exp bonus:" + blessesStats[4]);
+    }
+
+    //update bless after level up
+    public void setBlessAfterLevelUp(int blessIndex, int blessLevel, TextView blessInfo) {
         //update bless points
         blessPointTxt.setText("Bless Points:" + Char.getCharBlessPoints());
 
         //update bless text
-        setBlessText(blessInfo, Blesses.values()[blessInd], blessLV);
+        setBlessText(blessInfo, Blesses.values()[blessIndex], blessLevel);
 
         //update \ hide level up button
-        if (blessesBtn[blessInd][1] != null)
-            if (blessLV < 30)
-                blessesBtn[blessInd][1].setText("Level up Bless\n(" + BlessesData.blessLevelCost(blessLV) + ")");
+        if (blessesBtn[blessIndex][1] != null)
+            if (blessLevel < 50)
+                blessesBtn[blessIndex][1].setText("Level up Bless\n(" + (100 + (50 * blessLevel)) * (1 + (blessLevel / 10)) + ")");
             else
-                blessesBtn[blessInd][1].setVisibility(View.GONE);
+                blessesBtn[blessIndex][1].setVisibility(View.GONE);
     }
 
-    //set text of activated blesses
-    public void setActiveBlessesText(int active, double[] blessesStats) {
-        activeBlessInfo.setText("Active blesses:" + active +
-                "\nattack:" + (int) (blessesStats[0] * 100) + ", defense:" + (int) (blessesStats[1] * 100) + ", hp:" + (int) blessesStats[2] + ", mp:" + (int) blessesStats[3] +
-                "\ncritical rate:" + blessesStats[4] + ", critical damage:" + (int) blessesStats[5] + ", exp bonus:" + blessesStats[6]);
+    //show blesses page and update points
+    public void showBlessesPage() {
+        blessesLay.setVisibility(View.VISIBLE);
+        blessPointTxt.setText("Bless Points:" + Char.getCharBlessPoints());
+    }
+
+    private int getBlessIndex(int blessIndex) {
+        for (int b = 0; b < 4; b++)
+            if (activeBlessesIndexes[b] == blessIndex)
+                return b;
+        return -1;
+    }
+
+    private int getEmptyBlessSpot() {
+        int spot = -1;
+        for (int b = 0; b < 4; b++)
+            if (activeBlessesIndexes[b] == -1) {
+                spot = b;
+                break;
+            }
+        return spot;
     }
 }

@@ -55,7 +55,7 @@ public enum WeaponAttacks implements Attack {
     public final AttacksType attackType;
     public final ElementalEffects elementalEffect;
     public final WeaponEffects weaponEffect;
-    public static double bonusDamage;
+    public static float bonusDamage;
     public static int weaponDamage;
 
     WeaponAttacks(int attackNumber, String attackName, int attackDamage, int attackManaCost, int attackTimes, AttacksType attackType, ElementalEffects elementalEffect, WeaponEffects weaponEffect) {

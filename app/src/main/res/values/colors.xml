@@ -7,6 +7,8 @@
     <color name="white">#FFFFFF</color>
     <color name="silver">#BCBCBC</color>
     <color name="red">#E61818</color>
+    <color name="green">#3EFF1C</color>
+    <color name="gray">#939393</color>
     <color name="blue">#334FEA</color>
     <color name="darkred">#A12626</color>
     <color name="darkblue">#233078</color>
@@ -28,11 +30,12 @@
     <color name="devo">#FFFF33</color>
     <color name="frie">#FF3300</color>
     <color name="play">#FF2255</color>
-    <color name="gent">#FFCC00</color>
+    <color name="gent">#FFDD44</color>
     <color name="happ">#FF0055</color>
-    <color name="kind">#FFEE77</color>
+    <color name="kind">#FFEE33</color>
     <color name="imma">#9933FF</color>
     <color name="boyi">#FF9900</color>
     <color name="calm">#0088FF</color>
+    <color name="tend">#FFEE44</color>
 
 </resources>

@@ -9,6 +9,7 @@ import com.degonx.warriorsofdeagon.Enums.AreaEnums.Mob;
 import com.degonx.warriorsofdeagon.Enums.EffectsEnums.AreaEffects;
 import com.degonx.warriorsofdeagon.Enums.EffectsEnums.ElementalEffects;
 import com.degonx.warriorsofdeagon.Enums.MobsType;
+import com.degonx.warriorsofdeagon.Enums.Stats;
 import com.degonx.warriorsofdeagon.Game;
 import com.degonx.warriorsofdeagon.UI.GameUI;
 import com.degonx.warriorsofdeagon.UI.MobsUI;
@@ -34,8 +35,8 @@ public class Mobs {
     protected int mobYDes;
     protected int mobHeight;
     protected int mobWidth;
-    protected double mobBaseSpeed;
-    protected double mobSpeed = 0;
+    protected float mobBaseSpeed;
+    protected float mobSpeed = 0;
     protected int MobActiveElementalEffectCounter = 0;
     protected int mobSide = 1;
     protected boolean mobAggro = false;
@@ -104,7 +105,7 @@ public class Mobs {
             if (!game.Pause) {
 
                 //check if mob can move
-                if (mobSpeed > 0 && Char.getGMSkill(5) == 0) {
+                if (mobSpeed > 0 && Char.getGMSkill(4) == 0) {
 
                     //if mob is not aggressive
                     if (!mobAggro) {
@@ -192,14 +193,14 @@ public class Mobs {
     }
 
     //return multiplier that increases\decreases mob damage by character's defense
-    private double changeMobDamageByDefense(int Defense) {
-        double damageMultiplier = (double) mobAttack / Defense;
+    private float changeMobDamageByDefense(int Defense) {
+        float damageMultiplier = (float) mobAttack / Defense;
 
         //limit mob damage range
         if (damageMultiplier > 1.5)
-            damageMultiplier = 1.5;
+            damageMultiplier = 1.5f;
         else if (damageMultiplier < 0.2)
-            damageMultiplier = 0.2;
+            damageMultiplier = 0.2f;
 
         return damageMultiplier;
     }
@@ -210,7 +211,7 @@ public class Mobs {
 
         //attempt to avoid attack
         if (mobRan.nextInt(100) + 1 > Char.getPassiveSkillsAdd(10)) {
-            Char.addCharHP(-(int) (mobAttack * mul * (mobRan.nextDouble() * (1.25 - 0.75) + 0.75) * changeMobDamageByDefense(Char.statsMixer(2))));
+            Char.addCharHP(-(int) (mobAttack * mul * (mobRan.nextFloat() * (1.25 - 0.75) + 0.75) * changeMobDamageByDefense(Char.statsMixer(Stats.DEFENCE))));
         } else
             gameUI.setChat("attack avoided");
 

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.degonx.warriorsofdeagon.Adapters.SkillsAdapter;
 import com.degonx.warriorsofdeagon.Actions.SkillsActions;
 import com.degonx.warriorsofdeagon.Enums.SkillsEnum;
+import com.degonx.warriorsofdeagon.Enums.Stats;
 import com.degonx.warriorsofdeagon.Enums.WeaponsAndElementsEnums.ElementAttacks;
 import com.degonx.warriorsofdeagon.Enums.WeaponsAndElementsEnums.Elements;
 import com.degonx.warriorsofdeagon.Enums.WeaponsAndElementsEnums.WeaponAttacks;
@@ -352,8 +353,8 @@ public class CharacterUI {
     }
 
     public void updateHPMPText() {
-        charHPTxt.setText(Char.statsMixer(3) + "/" + Char.getCharHP());
-        charMPTxt.setText(Char.statsMixer(4) + "/" + Char.getCharMP());
+        charHPTxt.setText(Char.statsMixer(Stats.HP) + "/" + Char.getCharHP());
+        charMPTxt.setText(Char.statsMixer(Stats.MP) + "/" + Char.getCharMP());
     }
 
     public void setCharNameAndLevel() {
@@ -361,11 +362,11 @@ public class CharacterUI {
     }
 
     public void updateHPText() {
-        charHPTxt.setText(Char.statsMixer(3) + "/" + Char.getCharHP());
+        charHPTxt.setText(Char.statsMixer(Stats.HP) + "/" + Char.getCharHP());
     }
 
     public void updateMPText() {
-        charMPTxt.setText(Char.statsMixer(4) + "/" + Char.getCharMP());
+        charMPTxt.setText(Char.statsMixer(Stats.MP) + "/" + Char.getCharMP());
     }
 
     public void updateXPText(int requiredXP, int currentXP) {

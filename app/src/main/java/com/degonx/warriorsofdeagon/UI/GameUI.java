@@ -279,7 +279,7 @@ public class GameUI {
     }
 
     //show damage above the mod when attacked
-    public void damageMobText(double dmg, boolean crit, Mobs m, int i) {
+    public void damageMobText(float dmg, boolean crit, Mobs m, int i) {
         TextView mobDmgText = new TextView(game);
         mobDmgText.setTextColor(Color.RED);
         String dmgText = "you did " + Math.round(dmg) + " damage";
@@ -341,6 +341,7 @@ public class GameUI {
     }
 
     //open setting page
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     public void settingPage(AccountsDB accDB) {
         //pause the game
         game.Pause = true;
@@ -487,7 +488,7 @@ public class GameUI {
             settingL.setVisibility(View.GONE);
 
         //move view to char after closing layout
-        scrollToChar(Char.getCharX(),Char.getCharY());
+        scrollToChar(Char.getCharX(), Char.getCharY());
     }
 
     public void selectAdditionalElement(List<Elements> charElements) {

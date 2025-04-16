@@ -128,9 +128,9 @@ public class CharacterInventoryUI {
 
         //check if equip have the stat and add it to text
         if (Char.getEquipAdd(0) > 0)
-            InveCharStats = "Attack:" + (Char.getCharDamage() + Char.getEquipAdd(0)) + "(" + Char.getCharDamage() + "+" + Char.getEquipAdd(0) + ")";
+            InveCharStats = "Attack:" + (Char.getCharAttack() + Char.getEquipAdd(0)) + "(" + Char.getCharAttack() + "+" + Char.getEquipAdd(0) + ")";
         else
-            InveCharStats = "Attack:" + Char.getCharDamage();
+            InveCharStats = "Attack:" + Char.getCharAttack();
         if (Char.getEquipAdd(1) > 0)
             InveCharStats += "\nDefense:" + (Char.getCharDefense() + Char.getEquipAdd(1)) + "(" + Char.getCharDefense() + "+" + Char.getEquipAdd(1) + ")";
         else
@@ -170,8 +170,8 @@ public class CharacterInventoryUI {
         else
             equipmentNameTxt.setText(EquipmentsEnum.valueOf(equipment.equipmentID).getEquipmentName());
 
-        if (equipment.equipmentDMG > 0)
-            equipStats += "Attack:" + equipment.equipmentDMG + "\n";
+        if (equipment.equipmentATK > 0)
+            equipStats += "Attack:" + equipment.equipmentATK + "\n";
         if (equipment.equipmentDEF > 0)
             equipStats += "Defense:" + equipment.equipmentDEF + "\n";
         if (equipment.equipmentHP > 0)

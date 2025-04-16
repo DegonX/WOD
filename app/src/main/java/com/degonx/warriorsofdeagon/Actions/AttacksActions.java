@@ -9,6 +9,7 @@ import com.degonx.warriorsofdeagon.Enums.AttacksEnums.AttacksCount;
 import com.degonx.warriorsofdeagon.Enums.AttacksEnums.AttacksDirection;
 import com.degonx.warriorsofdeagon.Enums.AttacksEnums.AttacksRanges;
 import com.degonx.warriorsofdeagon.Enums.AttacksEnums.AttacksType;
+import com.degonx.warriorsofdeagon.Enums.Stats;
 import com.degonx.warriorsofdeagon.Enums.WeaponsAndElementsEnums.Elements;
 import com.degonx.warriorsofdeagon.Enums.MobsType;
 import com.degonx.warriorsofdeagon.Enums.EffectsEnums.WeaponEffects;
@@ -136,7 +137,7 @@ public class AttacksActions {
     }
 
     //increase or decrease damage by char element and mob type
-    private static double changeDamageByType(Elements charEle, MobsType mobType) {
+    private static float changeDamageByType(Elements charEle, MobsType mobType) {
 
         Log.i(TAG, "Char Element: " + charEle + ", Mob Type: " + mobType);
 
@@ -144,19 +145,19 @@ public class AttacksActions {
                 charEle == Elements.Energy && mobType == MobsType.Earth || charEle == Elements.Energy && mobType == MobsType.Lightning || charEle == Elements.Energy && mobType == MobsType.Light ||
                 charEle == Elements.Blood && mobType == MobsType.Water || charEle == Elements.Blood && mobType == MobsType.Earth || charEle == Elements.Darkness && mobType == MobsType.Lightning ||
                 charEle == Elements.Darkness && mobType == MobsType.Light)
-            return 1.25;
+            return 1.25f;
         else if (charEle == Elements.Fire && mobType == MobsType.Fire || charEle == Elements.Fire && mobType == MobsType.Water || charEle == Elements.Fire && mobType == MobsType.Earth ||
                 charEle == Elements.Ice && mobType == MobsType.Fire || charEle == Elements.Ice && mobType == MobsType.Lightning || charEle == Elements.Ice && mobType == MobsType.Metal ||
                 charEle == Elements.Energy && mobType == MobsType.Darkness || charEle == Elements.Blood && mobType == MobsType.Fire || charEle == Elements.Blood && mobType == MobsType.Lightning ||
                 charEle == Elements.Blood && mobType == MobsType.Metal || charEle == Elements.Darkness && mobType == MobsType.Fire || charEle == Elements.Darkness && mobType == MobsType.Darkness)
-            return 0.75;
+            return 0.75f;
         return 1;
     }
 
     //improve the damage
     public static void damageEnhance(Attack attack, Character Char, Mobs m, Elements charEle) {
 
-        int damage = (int) (attack.attackDamage() * Char.getBlessDamage());
+        int damage = attack.attackDamage();
 
         //recharge MP
         if (attack.attackManaCost() < 0)
@@ -180,28 +181,28 @@ public class AttacksActions {
     }
 
     //rises or reduce character damage by mob defense
-    private static double changeDamageByDefense(double charDamage, int mobDefense) {
-        double damage = charDamage / mobDefense;
+    private static float changeDamageByDefense(float charDamage, int mobDefense) {
+        float damage = charDamage / mobDefense;
         if (damage > 1.3)
-            damage = 1.3;
+            damage = 1.3f;
         else if (damage < 0.8)
-            damage = 0.8;
+            damage = 0.8f;
         return damage;
     }
 
     //attack mob
     private static void mobTakeDamage(int damage, int atktimes, Attack attack, Character Char, Mobs m) {
-        double finalDamage;
+        float finalDamage;
 
         //attack the amount of atktimes
         for (int at = 0; at < atktimes; at++) {
 
             //add character damage and increases\decreases character final damage by mob defense
-            finalDamage = (damage + Char.statsMixer(1)) * (Ran.nextDouble() * (1.3 - 0.8) + 0.8) * changeDamageByDefense(damage, m.getMobDefense());
+            finalDamage = (float) ((damage + Char.statsMixer(Stats.ATTACK)) * (Ran.nextFloat() * (1.3 - 0.8) + 0.8) * changeDamageByDefense(damage, m.getMobDefense()));
 
             //attempt to do critical damage and show damage above the mob
-            if (Ran.nextInt(100) + 1 <= Char.criticalRateMixer()) {
-                finalDamage *= 1.5 + (double) Char.statsMixer(5) / 100;
+            if (Ran.nextInt(100) + 1 <= Char.criticalMixer(Stats.CRITICAL_RATE)) {
+                finalDamage *= 1.5 + Char.criticalMixer(Stats.CRITICAL_DAMAGE);
                 Char.getGameUI().damageMobText(finalDamage, true, m, at);
             } else
                 Char.getGameUI().damageMobText(finalDamage, false, m, at);
@@ -238,7 +239,7 @@ public class AttacksActions {
             for (int at = 0; at < atktimes; at++) {
 
                 //improve skill attack damage
-                int finalDamage = (int) (damage * (Ran.nextDouble() * (1.5 - 0.9) + 0.9)) + Char.getCharDamage() * 3;
+                int finalDamage = (int) (damage * (Ran.nextFloat() * (1.5 - 0.9) + 0.9)) + Char.getCharAttack() * 3;
 
                 //show damage above the mob
                 Char.getGameUI().damageMobText(finalDamage, false, m, at);

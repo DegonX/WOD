@@ -33,7 +33,7 @@ public class EquipmentsDB extends SQLiteOpenHelper {
     private static final String KEY_EQUPT = "EquipmentUpgrades";
     private static final String KEY_EQHP = "HP";
     private static final String KEY_EQMP = "MP";
-    private static final String KEY_EQATK = "Damage";
+    private static final String KEY_EQATK = "Attack";
     private static final String KEY_EQDEF = "Defense";
 
 
@@ -107,7 +107,7 @@ public class EquipmentsDB extends SQLiteOpenHelper {
         values.put(KEY_EQUPT, equipment.equipmentUpgradeTimes);
         values.put(KEY_EQHP, equipment.equipmentHP);
         values.put(KEY_EQMP, equipment.equipmentMP);
-        values.put(KEY_EQATK, equipment.equipmentDMG);
+        values.put(KEY_EQATK, equipment.equipmentATK);
         values.put(KEY_EQDEF, equipment.equipmentDEF);
 
         db.insert(TABLE_EQUIP, null, values);

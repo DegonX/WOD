@@ -3,7 +3,6 @@ package com.degonx.warriorsofdeagon.Actions;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -503,13 +502,13 @@ public class NPCActions {
                     equipmentHolder.equipmentHP += Ran.nextInt(51) + 100;
 
                 if (type.contains("Gloves"))
-                    equipmentHolder.equipmentDMG += Ran.nextInt(11) + 10;
+                    equipmentHolder.equipmentATK += Ran.nextInt(11) + 10;
             } else
                 //weapon
-                equipmentHolder.equipmentDMG += Ran.nextInt(20) + 1;
+                equipmentHolder.equipmentATK += Ran.nextInt(20) + 1;
 
             //update changes in database
-            equipmentsDB.updateEquipment(equipmentHolder.equipmentPK, ++equipmentHolder.equipmentUpgradeTimes, equipmentHolder.equipmentHP, equipmentHolder.equipmentMP, equipmentHolder.equipmentDMG, equipmentHolder.equipmentDEF);
+            equipmentsDB.updateEquipment(equipmentHolder.equipmentPK, ++equipmentHolder.equipmentUpgradeTimes, equipmentHolder.equipmentHP, equipmentHolder.equipmentMP, equipmentHolder.equipmentATK, equipmentHolder.equipmentDEF);
             setEquipmentData();
         } else
             Toasts.makeToast(game, "you don't have enough Ores to Upgrade");
@@ -564,7 +563,7 @@ public class NPCActions {
         int inventorySlot = getFirstEmptySlot(equipments);
 
         //create the item
-        Equipments equipment = new Equipments(equipmentsDB.totalEquipments() + 1, newEquipment.toString(), -1, inventorySlot, 0, newEquipment.getEquipmentBaseHP(), newEquipment.getEquipmentBaseMP(), newEquipment.getEquipmentBaseDamage(), newEquipment.getEquipmentBaseDefense());
+        Equipments equipment = new Equipments(equipmentsDB.totalEquipments() + 1, newEquipment.toString(), -1, inventorySlot, 0, newEquipment.getEquipmentBaseHP(), newEquipment.getEquipmentBaseMP(), newEquipment.getEquipmentBaseAttack(), newEquipment.getEquipmentBaseDefense());
 
         //add the item to inventory and update in database
         equipments[inventorySlot] = equipment;
@@ -587,8 +586,8 @@ public class NPCActions {
             String stats = "";
 
             //add item stats names and values to text
-            if (equipmentHolder.equipmentDMG > 0)
-                stats += "Attack:" + equipmentHolder.equipmentDMG + "\n";
+            if (equipmentHolder.equipmentATK > 0)
+                stats += "Attack:" + equipmentHolder.equipmentATK + "\n";
             if (equipmentHolder.equipmentDEF > 0)
                 stats += "Defense:" + equipmentHolder.equipmentDEF + "\n";
             if (equipmentHolder.equipmentHP > 0)

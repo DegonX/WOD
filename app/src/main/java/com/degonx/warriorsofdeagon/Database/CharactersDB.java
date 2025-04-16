@@ -38,6 +38,10 @@ public class CharactersDB extends SQLiteOpenHelper {
     private static final String KEY_CHARELEMENT1 = "charElement1";
     private static final String KEY_CHARELEMENT2 = "charElement2";
     private static final String KEY_CHARELEMENT3 = "charElement3";
+    private static final String KEY_CHARBLESS1 = "charBless1";
+    private static final String KEY_CHARBLESS2 = "charBless2";
+    private static final String KEY_CHARBLESS3 = "charBless3";
+    private static final String KEY_CHARBLESS4 = "charBless4";
     private static final String KEY_CHARHPPOT = "charHPpot";
     private static final String KEY_CHARMPPOT = "charMPpot";
     private static final String KEY_BLESSPOINTS = "blessPoints";
@@ -62,6 +66,10 @@ public class CharactersDB extends SQLiteOpenHelper {
                     + KEY_CHARELEMENT1 + " INTEGER,"
                     + KEY_CHARELEMENT2 + " INTEGER,"
                     + KEY_CHARELEMENT3 + " INTEGER,"
+                    + KEY_CHARBLESS1 + " INTEGER,"
+                    + KEY_CHARBLESS2 + " INTEGER,"
+                    + KEY_CHARBLESS3 + " INTEGER,"
+                    + KEY_CHARBLESS4 + " INTEGER,"
                     + KEY_CHARHPPOT + " INTEGER,"
                     + KEY_CHARMPPOT + " INTEGER,"
                     + KEY_BLESSPOINTS + " INTEGER,"
@@ -102,6 +110,10 @@ public class CharactersDB extends SQLiteOpenHelper {
         values.put(KEY_CHARELEMENT1, ele1);
         values.put(KEY_CHARELEMENT2, ele2);
         values.put(KEY_CHARELEMENT3, 0);
+        values.put(KEY_CHARBLESS1, -1);
+        values.put(KEY_CHARBLESS2, -1);
+        values.put(KEY_CHARBLESS3, -1);
+        values.put(KEY_CHARBLESS4, -1);
         values.put(KEY_CHARHPPOT, 0);
         values.put(KEY_CHARMPPOT, 0);
         values.put(KEY_BLESSPOINTS, 0);
@@ -142,10 +154,10 @@ public class CharactersDB extends SQLiteOpenHelper {
             Data.setCharXP(Integer.parseInt(cursor.getString(3)));
             Data.setCharName(cursor.getString(4));
             Data.setCharSkillPoints(Integer.parseInt(cursor.getString(5)));
-            Data.setCharHPpots(Integer.parseInt(cursor.getString(9)));
-            Data.setCharMPpots(Integer.parseInt(cursor.getString(10)));
-            Data.setCharBlessPoints(Integer.parseInt(cursor.getString(11)));
-            Data.setCharArea(Areas.valueOf(cursor.getString(12)));
+            Data.setCharHPpots(Integer.parseInt(cursor.getString(13)));
+            Data.setCharMPpots(Integer.parseInt(cursor.getString(14)));
+            Data.setCharBlessPoints(Integer.parseInt(cursor.getString(15)));
+            Data.setCharArea(Areas.valueOf(cursor.getString(16)));
         }
 
         db.close();
@@ -170,6 +182,21 @@ public class CharactersDB extends SQLiteOpenHelper {
         db.close();
         cursor.close();
         return charElements;
+    }
+
+    public int[] getCharacterBlessesIndexes(int CharID) {
+        int[] charBlesses = new int[4];
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CHARACTERS + " WHERE " + KEY_CHARID + "='" + CharID + "'", null);
+
+        if (cursor.moveToFirst())
+            for (int b = 0; b < 4; b++)
+                charBlesses[b] = Integer.parseInt(cursor.getString(9 + b));
+
+        db.close();
+        cursor.close();
+        return charBlesses;
     }
 
     public List<Characters> getCharsForLobby(int accID) {
@@ -218,10 +245,15 @@ public class CharactersDB extends SQLiteOpenHelper {
         db.close();
     }
 
-
     public void updateElements(int charID, int charEle, int type) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_CHARACTERS + " SET charElement" + charEle + "='" + type + "'" + " WHERE " + KEY_CHARID + "='" + charID + "'");
+        db.close();
+    }
+
+    public void updateBlesses(int charID, int blessIndex, int slotIndex) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_CHARACTERS + " SET charBless" + slotIndex + "='" + blessIndex + "'" + " WHERE " + KEY_CHARID + "='" + charID + "'");
         db.close();
     }
 
@@ -269,32 +301,5 @@ public class CharactersDB extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_CHARACTERS + "  WHERE " + KEY_CHARID + "='" + CharID + "'");
         db.execSQL("VACUUM");
         db.close();
-    }
-
-    public Integer getAccountID(int charID) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT " + KEY_CHARACCOUNT + " FROM " + TABLE_CHARACTERS + " WHERE " + KEY_CHARID + "='" + charID + "'", null);
-        if (cursor.moveToFirst())
-            return cursor.getInt(cursor.getColumnIndex(KEY_CHARACCOUNT));
-        cursor.close();
-        return -1;
-    }
-
-    public Integer getCharHPpot(int charID) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT " + KEY_CHARHPPOT + " FROM " + TABLE_CHARACTERS + " WHERE " + KEY_CHARID + "='" + charID + "'", null);
-        if (cursor.moveToFirst())
-            return cursor.getInt(cursor.getColumnIndex(KEY_CHARHPPOT));
-        cursor.close();
-        return -1;
-    }
-
-    public Integer getCharMPpot(int charID) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT " + KEY_CHARMPPOT + " FROM " + TABLE_CHARACTERS + " WHERE " + KEY_CHARID + "='" + charID + "'", null);
-        if (cursor.moveToFirst())
-            return cursor.getInt(cursor.getColumnIndex(KEY_CHARMPPOT));
-        cursor.close();
-        return -1;
     }
 }

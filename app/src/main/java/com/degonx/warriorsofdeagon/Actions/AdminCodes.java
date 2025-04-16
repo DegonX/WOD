@@ -43,6 +43,10 @@ public class AdminCodes {
                 accDB.updateOres(Char.getAccountID(), 500000);
                 break;
 
+            case "blesstest":
+                charDB.updateBlessPoints(Char.getCharID(), 500000);
+                break;
+
             case "droptest":
                 addAdminSkill(SkillsEnum.DROP_TEST);
                 break;
@@ -53,11 +57,6 @@ public class AdminCodes {
 
             case "lordtest":
                 addAdminSkill(SkillsEnum.LORD_TEST);
-                break;
-
-            case "blesstest":
-                addAdminSkill(SkillsEnum.BLESS_TEST);
-                charDB.updateBlessPoints(Char.getCharID(), 500000);
                 break;
 
             case "godmode":
@@ -80,7 +79,6 @@ public class AdminCodes {
                 addAdminSkill(SkillsEnum.DROP_TEST);
                 addAdminSkill(SkillsEnum.SKILLS_TEST);
                 addAdminSkill(SkillsEnum.LORD_TEST);
-                addAdminSkill(SkillsEnum.BLESS_TEST);
                 addAdminSkill(SkillsEnum.GOD_MODE);
                 addAdminSkill(SkillsEnum.STOP_MOBS);
                 addAdminSkill(SkillsEnum.CHAR_SPEED);

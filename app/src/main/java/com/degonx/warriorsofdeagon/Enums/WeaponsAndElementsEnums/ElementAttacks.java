@@ -36,7 +36,7 @@ public enum ElementAttacks implements Attack {
     public final ElementalEffects elementalEffect;
     public final AreaEffects areaEffect;
     public final int attackCooldown;
-    public static double bonusDamage;
+    public static float bonusDamage;
 
     ElementAttacks(int attackNumber, String attackName, int attackDamage, int attackManaCost, int attackTimes, AttacksType attackType, ElementalEffects elementalEffect, AreaEffects areaEffect, int attackCooldown) {
         this.attackNumber = attackNumber;

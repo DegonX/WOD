@@ -22,18 +22,18 @@ public enum EquipmentsEnum {
     final String equipmentType;
     final int equipmentImage;
     final String equipmentName;
-    final int equipmentBaseDamage;
+    final int equipmentBaseAttack;
     final int equipmentBaseDefense;
     final int equipmentBaseHP;
     final int equipmentBaseMP;
 
     final EquipmentsEffects equipmentEffects;
 
-    EquipmentsEnum(String equipmentType, int equipmentImage, String equipmentName, int equipmentBaseDamage, int equipmentBaseDefense, int equipmentBaseHP, int equipmentBaseMP, EquipmentsEffects equipmentEffects) {
+    EquipmentsEnum(String equipmentType, int equipmentImage, String equipmentName, int equipmentBaseAttack, int equipmentBaseDefense, int equipmentBaseHP, int equipmentBaseMP, EquipmentsEffects equipmentEffects) {
         this.equipmentType = equipmentType;
         this.equipmentImage = equipmentImage;
         this.equipmentName = equipmentName;
-        this.equipmentBaseDamage = equipmentBaseDamage;
+        this.equipmentBaseAttack = equipmentBaseAttack;
         this.equipmentBaseDefense = equipmentBaseDefense;
         this.equipmentBaseHP = equipmentBaseHP;
         this.equipmentBaseMP = equipmentBaseMP;
@@ -52,8 +52,8 @@ public enum EquipmentsEnum {
         return equipmentName;
     }
 
-    public int getEquipmentBaseDamage() {
-        return equipmentBaseDamage;
+    public int getEquipmentBaseAttack() {
+        return equipmentBaseAttack;
     }
 
     public int getEquipmentBaseDefense() {

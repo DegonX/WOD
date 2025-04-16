@@ -40,7 +40,6 @@ public enum SkillsEnum {
     DROP_TEST("drop test", "passive_skill", "60%+ drop rate", R.drawable.manahealing, 1),
     SKILLS_TEST("skills test", "passive_skill", "skills while not cost MP", R.drawable.manahealing, 1),
     LORD_TEST("lord test", "passive_skill", "getting lords points 10 times faster", R.drawable.manahealing, 1),
-    BLESS_TEST("bless test", "passive_skill", "get bless use from mobs", R.drawable.manahealing, 1),
     GROUND_PUNCH("Ground Punch", "attack_skill", "Unleash your rage on the field and cause damage to surrounding enemies", R.drawable.gpunch, 40),
     DARKNESS_EXPLOSION("Darkness Explosion", "attack_skill", "Feed Energy to your Darkness and cause a massive explosion", R.drawable.armageddon, 10);
 

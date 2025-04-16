@@ -121,7 +121,7 @@ public class CharacterStatsUI {
         statsLay.setVisibility(View.VISIBLE);
         statsCharLevelTxt.setText("Level:" + Char.getCharLevel());
         String charStatsStr = "HP:" + (Char.getCharMaxHP() + Char.getEquipAdd(2)) + "\nMP:" + (Char.getCharMaxMP() + Char.getEquipAdd(3));
-        charStatsStr += "\nAttack:" + (Char.getCharDamage() + Char.getEquipAdd(0)) + "\nDefense:" + (Char.getCharDefense() + Char.getEquipAdd(1));
+        charStatsStr += "\nAttack:" + (Char.getCharAttack() + Char.getEquipAdd(0)) + "\nDefense:" + (Char.getCharDefense() + Char.getEquipAdd(1));
         charStatsStr += "\nCritical Rate:" + String.format(Locale.ENGLISH, "%.2f", Char.getCharCriticalRate()) + "\nCritical Damage:" + Char.getCharCriticalDamage();
         charStatTxt.setText(charStatsStr);
     }

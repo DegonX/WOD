@@ -68,16 +68,16 @@ public class SkillsActions {
                         executeAttackSkill(400 + (20 * skill.skillLevel), 700, 1, Char, mobs);
                     break;
                 case "GOD_MODE":
+                    if (Char.getGMSkill(3) == 0)
+                        Char.setGMSkills(3, 1);
+                    else
+                        Char.setGMSkills(3, 0);
+                    break;
+                case "STOP_MOBS":
                     if (Char.getGMSkill(4) == 0)
                         Char.setGMSkills(4, 1);
                     else
                         Char.setGMSkills(4, 0);
-                    break;
-                case "STOP_MOBS":
-                    if (Char.getGMSkill(5) == 0)
-                        Char.setGMSkills(5, 1);
-                    else
-                        Char.setGMSkills(5, 0);
                     break;
 
                 case "CHAR_SPEED":
@@ -88,10 +88,10 @@ public class SkillsActions {
                     break;
 
                 case "DAMAGE1":
-                    if (Char.getGMSkill(6) == 0)
-                        Char.setGMSkills(6, 1);
+                    if (Char.getGMSkill(5) == 0)
+                        Char.setGMSkills(5, 1);
                     else
-                        Char.setGMSkills(6, 0);
+                        Char.setGMSkills(5, 0);
                     break;
                 default:
                     gameUI.setChat("not enough MP to use this skill or it's already activated");
