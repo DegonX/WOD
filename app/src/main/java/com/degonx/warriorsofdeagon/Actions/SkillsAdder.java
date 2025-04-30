@@ -23,7 +23,6 @@ public class SkillsAdder {
         skillsdb.registerSkill(CharID, SkillsEnum.HEAVY_SWORD_MASTERY, 0);
         skillsdb.registerSkill(CharID, SkillsEnum.CHOKUTO_MASTERY, 0);
         skillsdb.registerSkill(CharID, SkillsEnum.DAGGERS_MASTERY, 0);
-        skillsdb.registerSkill(CharID, SkillsEnum.WARHAMMER_MASTERY, 0);
 
         //add active skills
         skillsdb.registerSkill(CharID, SkillsEnum.POWER_BOOST, 0);

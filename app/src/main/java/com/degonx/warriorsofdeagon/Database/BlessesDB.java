@@ -20,7 +20,7 @@ public class BlessesDB extends SQLiteOpenHelper {
 
     //Table Columns names
     private static final String KEY_CHARID = "charID";
-    private static final int totalBlesses = 17;
+    private static final int totalBlesses = 14;
 
     public BlessesDB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

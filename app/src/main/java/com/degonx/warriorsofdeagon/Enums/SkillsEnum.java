@@ -9,7 +9,6 @@ public enum SkillsEnum {
     HEAVY_SWORD_MASTERY("Heavy Sword Mastery", "weapon_mastery-Heavy_Sword", "Heavy Sword damage increase by 5 per skill level", R.drawable.smheavysword, 30),
     CHOKUTO_MASTERY("Chokuto Mastery", "weapon_mastery-Chokuto", "Chokuto damage increase by 5 per skill level", R.drawable.smchokuto, 30),
     DAGGERS_MASTERY("Daggers Mastery", "weapon_mastery-Daggers", "Daggers damage increase by 5 per skill level", R.drawable.smdaggers, 30),
-    WARHAMMER_MASTERY("Warhammer Mastery", "weapon_mastery-Warhammer", "Warhammer damage increase by 5 per skill level", R.drawable.smwarhammer, 30),
     BLOOD_WEAPONS_MASTERY("Blood Weapons Mastery", "weapon_mastery-Blood_Weapons", "Blood Weapons damage increase by 10 per skill level", R.drawable.smbloodweapons, 30),
     FIRE_KNOWLEDGE("Fire Knowledge", "element_knowledge-Fire", "Fire damage increase by 5 per skill level", R.drawable.smfire, 30),
     ICE_KNOWLEDGE("Ice Knowledge", "element_knowledge-Ice", "Ice damage increase by 5 per skill level", R.drawable.smice, 30),

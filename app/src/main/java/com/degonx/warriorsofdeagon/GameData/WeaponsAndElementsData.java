@@ -39,12 +39,6 @@ public class WeaponsAndElementsData {
                         "Slash through enemies cutting them X pattern",
                         "Unleash 8 slashes upon an enemy",
                         "Spin while holding out your daggers releasing wrath on enemies"};
-            case Warhammer:
-                return new String[]{
-                        "Swing to hit an enemy",
-                        "Smash into enemies and push them back",
-                        "Slam a enemy to the ground",
-                        "smack your warhammer to the ground and damage the nearby enemies"};
             case Blood_Weapons:
                 return new String[]{
                         "Create blood fist with your blood and punch an enemy",

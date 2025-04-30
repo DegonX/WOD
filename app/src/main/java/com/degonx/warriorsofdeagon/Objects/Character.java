@@ -207,7 +207,7 @@ public class Character {
         gameUI.joyStick();
 
         //add active blesses stats
-        for (int b = 0; b < 4; b++)
+        for (int b = 0; b < 5; b++)
             if (charActiveBlessesIndexes[b] != -1)
                 blessActions(charActiveBlessesIndexes[b], 1, b, false);
 
@@ -1095,7 +1095,7 @@ public class Character {
                 int spot = -1;
 
                 //deactivate bless
-                for (int b = 0; b < 4; b++)
+                for (int b = 0; b < 5; b++)
                     if (charActiveBlessesIndexes[b] == blessIndex) {
                         isActive = true;
                         spot = b;

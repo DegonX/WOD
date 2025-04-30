@@ -20,7 +20,7 @@
     <color name="tred">#8BC60B0B</color>
     <color name="tyellow">#BAFAE53E</color>
 
-    <color name="chee">#FFDD00</color>
+    <color name="chee">#EECC00</color>
     <color name="inno">#FF0088</color>
     <color name="matu">#88CCFF</color>
     <color name="ener">#FF8822</color>
@@ -31,11 +31,8 @@
     <color name="frie">#FF3300</color>
     <color name="play">#FF2255</color>
     <color name="gent">#FFDD44</color>
-    <color name="happ">#FF0055</color>
-    <color name="kind">#FFEE33</color>
-    <color name="imma">#9933FF</color>
+    <color name="kind">#33CCFF</color>
     <color name="boyi">#FF9900</color>
-    <color name="calm">#0088FF</color>
-    <color name="tend">#FFEE44</color>
+    <color name="tend">#FFEE00</color>
 
 </resources>

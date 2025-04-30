@@ -42,6 +42,7 @@ public class CharactersDB extends SQLiteOpenHelper {
     private static final String KEY_CHARBLESS2 = "charBless2";
     private static final String KEY_CHARBLESS3 = "charBless3";
     private static final String KEY_CHARBLESS4 = "charBless4";
+    private static final String KEY_CHARBLESS5 = "charBless5";
     private static final String KEY_CHARHPPOT = "charHPpot";
     private static final String KEY_CHARMPPOT = "charMPpot";
     private static final String KEY_BLESSPOINTS = "blessPoints";
@@ -70,6 +71,7 @@ public class CharactersDB extends SQLiteOpenHelper {
                     + KEY_CHARBLESS2 + " INTEGER,"
                     + KEY_CHARBLESS3 + " INTEGER,"
                     + KEY_CHARBLESS4 + " INTEGER,"
+                    + KEY_CHARBLESS5 + " INTEGER,"
                     + KEY_CHARHPPOT + " INTEGER,"
                     + KEY_CHARMPPOT + " INTEGER,"
                     + KEY_BLESSPOINTS + " INTEGER,"
@@ -114,6 +116,7 @@ public class CharactersDB extends SQLiteOpenHelper {
         values.put(KEY_CHARBLESS2, -1);
         values.put(KEY_CHARBLESS3, -1);
         values.put(KEY_CHARBLESS4, -1);
+        values.put(KEY_CHARBLESS5, -1);
         values.put(KEY_CHARHPPOT, 0);
         values.put(KEY_CHARMPPOT, 0);
         values.put(KEY_BLESSPOINTS, 0);
@@ -154,10 +157,10 @@ public class CharactersDB extends SQLiteOpenHelper {
             Data.setCharXP(Integer.parseInt(cursor.getString(3)));
             Data.setCharName(cursor.getString(4));
             Data.setCharSkillPoints(Integer.parseInt(cursor.getString(5)));
-            Data.setCharHPpots(Integer.parseInt(cursor.getString(13)));
-            Data.setCharMPpots(Integer.parseInt(cursor.getString(14)));
-            Data.setCharBlessPoints(Integer.parseInt(cursor.getString(15)));
-            Data.setCharArea(Areas.valueOf(cursor.getString(16)));
+            Data.setCharHPpots(Integer.parseInt(cursor.getString(14)));
+            Data.setCharMPpots(Integer.parseInt(cursor.getString(15)));
+            Data.setCharBlessPoints(Integer.parseInt(cursor.getString(16)));
+            Data.setCharArea(Areas.valueOf(cursor.getString(17)));
         }
 
         db.close();
@@ -185,13 +188,13 @@ public class CharactersDB extends SQLiteOpenHelper {
     }
 
     public int[] getCharacterBlessesIndexes(int CharID) {
-        int[] charBlesses = new int[4];
+        int[] charBlesses = new int[5];
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CHARACTERS + " WHERE " + KEY_CHARID + "='" + CharID + "'", null);
 
         if (cursor.moveToFirst())
-            for (int b = 0; b < 4; b++)
+            for (int b = 0; b < 5; b++)
                 charBlesses[b] = Integer.parseInt(cursor.getString(9 + b));
 
         db.close();

@@ -45,8 +45,6 @@ public class Equipments {
                 return Weapons.Chokuto;
             case "weapon-Daggers":
                 return Weapons.Daggers;
-            case "weapon-Warhammer":
-                return Weapons.Warhammer;
         }
         return Weapons.Blood_Weapons;
     }

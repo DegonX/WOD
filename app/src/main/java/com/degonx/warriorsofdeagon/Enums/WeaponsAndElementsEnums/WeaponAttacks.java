@@ -37,11 +37,6 @@ public enum WeaponAttacks implements Attack {
     DAGGERS_OCTUPLE_SLASHES(3, "Octuple Slashes", 15, 80, 8, AttacksType.SingleShortFront, ElementalEffects.Chance, WeaponEffects.None),
     DAGGERS_SPIN_SLASHES(4, "Spin Slashes", 30, 90, 6, AttacksType.MidSurround, ElementalEffects.Chance, WeaponEffects.None),
 
-    WARHAMMER_SWING(1, "Swing", 35, -5, 1, AttacksType.SingleShortFront, ElementalEffects.Chance, WeaponEffects.None),
-    WARHAMMER_SMASH(2, "Smash", 80, 40, 1, AttacksType.ShortFront, ElementalEffects.Chance, WeaponEffects.None),
-    WARHAMMER_SLAM(3, "Slam", 140, 70, 1, AttacksType.SingleShortFront, ElementalEffects.Chance, WeaponEffects.None),
-    WARHAMMER_GROUND_SMACK(4, "Ground Smack", 190, 110, 1, AttacksType.MidSurround, ElementalEffects.Chance, WeaponEffects.None),
-
     BLOOD_WEAPONS_FIST(1, "Fist", 40, -10, 1, AttacksType.SingleShortFront, ElementalEffects.None, WeaponEffects.None),
     BLOOD_WEAPONS_CLAW(2, "Claw", 90, 50, 1, AttacksType.ShortFront, ElementalEffects.None, WeaponEffects.None),
     BLOOD_WEAPONS_DRAIN(3, "Drain", 150, 90, 1, AttacksType.SingleShortFront, ElementalEffects.None, WeaponEffects.Drain),

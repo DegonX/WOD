@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,7 +22,10 @@ import com.degonx.warriorsofdeagon.Objects.Character;
 import com.degonx.warriorsofdeagon.R;
 import com.degonx.warriorsofdeagon.VisionAndSound.Toasts;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 @SuppressLint("SetTextI18n")
 public class CharacterBlessesUI {
@@ -58,49 +62,53 @@ public class CharacterBlessesUI {
 
     //set blesses views
     private void setBlessInBlessesPage(int blessIndex, int[] blessLevel, Blesses bless) {
-        //create layout and textview for each bless
-        LinearLayout newBlessLay = new LinearLayout(game);
-        newBlessLay.setOrientation(LinearLayout.VERTICAL);
-        blessesScroll.addView(newBlessLay);
-        TextView blessInfo = new TextView(game);
-        newBlessLay.addView(blessInfo);
+        //load blessView inflater layout
+        LayoutInflater inflater = LayoutInflater.from(game);
+        View blessView = inflater.inflate(R.layout.blessview, blessesScroll, false); // inflate into blessesScroll later
 
-        //set textview
-        blessInfo.setTextSize(18);
-        blessInfo.setTextColor(Color.BLACK);
-        blessInfo.setPadding(16, 16, 16, 16);
-        blessInfo.setBackgroundResource(bless.Color);
-        setBlessText(blessInfo, bless, blessLevel[blessIndex]);
+        //add the blessView to the blessesscroll
+        blessesScroll.addView(blessView);
 
-        //create and set bless active button
-        blessesBtn[blessIndex][0] = new Button(game);
-        newBlessLay.addView(blessesBtn[blessIndex][0]);
+        //get the views from blessview
+        TextView blessNameTxt = blessView.findViewById(R.id.blessNameTxt);
+        TextView blessStatsTxt = blessView.findViewById(R.id.blessStatsTxt);
+        blessesBtn[blessIndex][0] = blessView.findViewById(R.id.blessActivationBtn);
+        blessesBtn[blessIndex][1] = blessView.findViewById(R.id.blessLevelUpBtn);
+        LinearLayout blessInfoView = blessView.findViewById(R.id.blessInfoView);
 
-        //blesses layout views in activated
+        //set bless name and background color
+        blessNameTxt.setText(bless.name());
+        blessInfoView.setBackgroundResource(bless.Color);
+
+        //set bless stats text
+        setBlessText(blessStatsTxt, bless, blessLevel[blessIndex]);
+
+        //set activation button
         if (getBlessIndex(blessIndex) > -1) {
             blessesBtn[blessIndex][0].setText("Deactivate");
-            blessInfo.setBackground(getBorder(bless.Color, true));
+            blessInfoView.setBackground(getBorder(bless.Color, true));
         } else
             blessesBtn[blessIndex][0].setText("Activate");
 
-        //activate \ deactivate the bless button
+        //activate \ deactivate bless
         blessesBtn[blessIndex][0].setOnClickListener(view -> {
             if (blessLevel[blessIndex] > 0)
-                activateButtonAction(blessIndex, blessInfo, bless.Color);
+                activateButtonAction(blessIndex, blessInfoView, bless.Color);
             else
-                Toasts.makeToast(game, "you need to level up this bless first");
+                Toasts.makeToast(game, "You need to level up this bless first");
         });
 
-        //create and set bless level up button
+        //set level up button
         if (blessLevel[blessIndex] < 50) {
-            blessesBtn[blessIndex][1] = new Button(game);
-            newBlessLay.addView(blessesBtn[blessIndex][1]);
-            blessesBtn[blessIndex][1].setText("Level up Bless\n(" + (100 + (50 * blessLevel[blessIndex])) * (1 + (blessLevel[blessIndex] / 10)) + ")");
-            blessesBtn[blessIndex][1].setOnClickListener(view -> Char.levelUpBless(blessIndex, blessInfo));
-        }
+            int cost = (100 + (50 * blessLevel[blessIndex])) * (1 + (blessLevel[blessIndex] / 10));
+            blessesBtn[blessIndex][1].setText("Level up Bless\n(" + cost + ")");
+            blessesBtn[blessIndex][1].setOnClickListener(view -> Char.levelUpBless(blessIndex, blessStatsTxt));
+        } else
+            //hide the levelup button if maxed
+            blessesBtn[blessIndex][1].setVisibility(View.GONE);
     }
 
-    public void activateButtonAction(int blessIndex, TextView blessInfo, int color) {
+    public void activateButtonAction(int blessIndex, LinearLayout blessInfo, int color) {
         //get the bless index if active(-1 is not activate)
         int activeSlot = getBlessIndex(blessIndex);
 
@@ -128,33 +136,35 @@ public class CharacterBlessesUI {
 
                 //add red border
                 blessInfo.setBackground(getBorder(color, true));
-            } else {
+            } else
                 Toasts.makeToast(game, "cannot use more than 4 blesses at once");
-            }
         }
     }
 
     private void setBlessText(TextView blessInfo, Blesses bless, int blessLevel) {
-        //create string builder and the bless name and level
-        StringBuilder blessInfoStr = new StringBuilder("    " + bless);
-        blessInfoStr.append("\nLv.:").append(blessLevel);
+        //create string builder and add bless level
+        StringBuilder blessInfoStr = new StringBuilder("Lv." + blessLevel);
 
-        //get bless stats
-        Stats[] blessStats = bless.blessStats;
+        Map<Stats, Float> statTotals = new LinkedHashMap<>();
 
-        float stat;
-
-        for (Stats s : blessStats) {
+        //sum if there is duplicate stat
+        for (Stats s : bless.blessStats) {
             //get the stat multiplied by the level
-            stat = BlessesData.getBlessStats(s, blessLevel);
+            float value = BlessesData.getBlessStats(s, blessLevel);
+            statTotals.put(s, statTotals.getOrDefault(s, 0f) + value);
+        }
 
-            //add the stat to the text
+        //add the stat to the text
+        for (Map.Entry<Stats, Float> stat : statTotals.entrySet()) {
+            Stats s = stat.getKey();
+            float statSum = stat.getValue();
+
             if (s.equals(Stats.ATTACK) || s.equals(Stats.DEFENCE) || s.equals(Stats.HP) || s.equals(Stats.MP))
-                blessInfoStr.append("\n").append(s.statName).append(":").append((int) stat);
+                blessInfoStr.append("\n").append(s.statName).append(":").append((int) statSum);
             else if (s.equals(Stats.CRITICAL_RATE) || s.equals(Stats.CRITICAL_DAMAGE))
-                blessInfoStr.append("\n").append(s.statName).append(":").append(String.format(Locale.ENGLISH, "%.2f", stat)).append("%");
+                blessInfoStr.append("\n").append(s.statName).append(":").append(String.format(Locale.ENGLISH, "%.2f", statSum)).append("%");
             else if (s.equals(Stats.BONUS_XP))
-                blessInfoStr.append("\n").append(s.statName).append(":").append((int) stat).append("%");
+                blessInfoStr.append("\n").append(s.statName).append(":").append((int) statSum).append("%");
         }
 
         //set the text into bless text view

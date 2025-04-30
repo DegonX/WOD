@@ -16,8 +16,7 @@ public enum EquipmentsEnum {
     POLEAXE("weapon-Poleaxe", R.drawable.poleaxe1, "Poleaxe", 55, 0, 0, 0, EquipmentsEffects.NONE),
     HEAVY_SWORD("weapon-Heavy_Sword", R.drawable.heavysword1, "Heavy Sword", 60, 0, 0, 0, EquipmentsEffects.NONE),
     CHOKUTO("weapon-Chokuto", R.drawable.chokuto1, "Chokuto", 40, 0, 0, 0, EquipmentsEffects.NONE),
-    DAGGERS("weapon-Daggers", R.drawable.daggers1, "Daggers", 40, 0, 0, 0, EquipmentsEffects.NONE),
-    WARHAMMER("weapon-Warhammer", R.drawable.warhammer1, "Warhammer", 55, 0, 0, 0, EquipmentsEffects.NONE);
+    DAGGERS("weapon-Daggers", R.drawable.daggers1, "Daggers", 40, 0, 0, 0, EquipmentsEffects.NONE);
 
     final String equipmentType;
     final int equipmentImage;
