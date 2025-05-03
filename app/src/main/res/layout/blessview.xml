@@ -7,11 +7,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/blessView"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:background="@color/tsilver"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -39,10 +38,12 @@
             <TextView
                 android:id="@+id/blessStatsTxt"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="wrap_content"
+                android:minHeight="110dp"
                 android:paddingStart="8dp"
                 android:paddingTop="12dp"
                 android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
                 android:text="Level:99 \nXXXX:XXXX \nXXXX:XXXX \nXXXX:XXXX"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -71,6 +72,5 @@
                 android:layout_height="wrap_content"
                 android:text="Level up Bless" />
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

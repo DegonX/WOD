@@ -9,15 +9,16 @@ public enum Blesses {
     HP, HP, Critical Damage @Tend
     HP, MP, Defence @Kind
     HP, MP, Bonus XP @Timi
+    HP, MP, Critical Rate @Inno
     HP, Attack, Critical Rate @Chee
+    HP, Defence, Bonus XP @Gent
+    MP, MP, Critical Damage @Ador
     Attack, Attack, Critical Damage @Ener
     Attack, Defence, Bonus XP @Frie
     Attack, MP, Bonus XP @Play
     Attack, Critical Rate, Critical Damage @Boyi
     Defence, Defence, Critical Rate @Matu
     Defence, Critical Rate, Critical Damage @Tsun
-    MP, HP, Critical Rate @Inno
-    MP, MP, Critical Damage @Ador
     */
 
     Chee(R.color.chee, new Stats[]{Stats.HP, Stats.ATTACK, Stats.CRITICAL_RATE}),

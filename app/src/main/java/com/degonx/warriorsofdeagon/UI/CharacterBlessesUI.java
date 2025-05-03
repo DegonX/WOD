@@ -22,7 +22,6 @@ import com.degonx.warriorsofdeagon.Objects.Character;
 import com.degonx.warriorsofdeagon.R;
 import com.degonx.warriorsofdeagon.VisionAndSound.Toasts;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -31,7 +30,7 @@ import java.util.Map;
 public class CharacterBlessesUI {
 
 
-    private final TextView blessPointTxt, activeBlessInfo;
+    private final TextView blessPointTxt, activeBlessCountTxt, activeBlessInfoTxt;
     private final ConstraintLayout blessesLay;
     private final LinearLayout blessesScroll;
     private final Button[][] blessesBtn;
@@ -51,9 +50,10 @@ public class CharacterBlessesUI {
 
         //load all blesses page view
         blessesLay = game.findViewById(R.id.blessesL);
-        blessPointTxt = game.findViewById(R.id.BPointsT);
+        blessPointTxt = game.findViewById(R.id.blessPointsTxt);
         blessesScroll = game.findViewById(R.id.blessesScroll);
-        activeBlessInfo = game.findViewById(R.id.activeBlessInfo);
+        activeBlessCountTxt = game.findViewById(R.id.activeBlessCount);
+        activeBlessInfoTxt = game.findViewById(R.id.activeBlessInfo);
 
         //create blesses views
         for (int b = 0; b < blessesLevels.length; b++)
@@ -64,7 +64,7 @@ public class CharacterBlessesUI {
     private void setBlessInBlessesPage(int blessIndex, int[] blessLevel, Blesses bless) {
         //load blessView inflater layout
         LayoutInflater inflater = LayoutInflater.from(game);
-        View blessView = inflater.inflate(R.layout.blessview, blessesScroll, false); // inflate into blessesScroll later
+        View blessView = inflater.inflate(R.layout.blessview, blessesScroll, false);
 
         //add the blessView to the blessesscroll
         blessesScroll.addView(blessView);
@@ -81,7 +81,7 @@ public class CharacterBlessesUI {
         blessInfoView.setBackgroundResource(bless.Color);
 
         //set bless stats text
-        setBlessText(blessStatsTxt, bless, blessLevel[blessIndex]);
+        blessStatsTxt.setText(setBlessText(bless, blessLevel[blessIndex]));
 
         //set activation button
         if (getBlessIndex(blessIndex) > -1) {
@@ -137,11 +137,11 @@ public class CharacterBlessesUI {
                 //add red border
                 blessInfo.setBackground(getBorder(color, true));
             } else
-                Toasts.makeToast(game, "cannot use more than 4 blesses at once");
+                Toasts.makeToast(game, "cannot use more than 5 blesses at once");
         }
     }
 
-    private void setBlessText(TextView blessInfo, Blesses bless, int blessLevel) {
+    private String setBlessText(Blesses bless, int blessLevel) {
         //create string builder and add bless level
         StringBuilder blessInfoStr = new StringBuilder("Lv." + blessLevel);
 
@@ -168,7 +168,7 @@ public class CharacterBlessesUI {
         }
 
         //set the text into bless text view
-        blessInfo.setText(blessInfoStr);
+        return blessInfoStr.toString();
     }
 
     //create \ remove border around activated blesses
@@ -194,14 +194,17 @@ public class CharacterBlessesUI {
 
     //set text of activated blesses
     public void setActiveBlessesText(int active, int[] blessesStats, float[] blessesCriticalStats) {
+        //set test to show how many blesses activated
+        activeBlessCountTxt.setText("Active Blesses:" + active);
+
         //format float values to prevent inaccurate text values
         String formattedRate = String.format(Locale.US, "%.1f", blessesCriticalStats[0]);
         String formattedDamage = String.format(Locale.US, "%.1f", blessesCriticalStats[1]);
 
-        //set text
-        activeBlessInfo.setText("Active blesses:" + active + "\nattack:" + blessesStats[0] + ", defense:" + blessesStats[1] +
+        //set text of total stats added by the active blesses
+        activeBlessInfoTxt.setText("attack:" + blessesStats[0] + ", defense:" + blessesStats[1] +
                 ", hp:" + blessesStats[2] + ", mp:" + blessesStats[3] + "\ncritical rate:" + formattedRate +
-                ", critical damage:" + formattedDamage + ", exp bonus:" + blessesStats[4]);
+                ", critical damage:" + formattedDamage + ", bonus exp:" + blessesStats[4]);
     }
 
     //update bless after level up
@@ -210,7 +213,7 @@ public class CharacterBlessesUI {
         blessPointTxt.setText("Bless Points:" + Char.getCharBlessPoints());
 
         //update bless text
-        setBlessText(blessInfo, Blesses.values()[blessIndex], blessLevel);
+        blessInfo.setText(setBlessText(Blesses.values()[blessIndex], blessLevel));
 
         //update \ hide level up button
         if (blessesBtn[blessIndex][1] != null)
@@ -227,7 +230,7 @@ public class CharacterBlessesUI {
     }
 
     private int getBlessIndex(int blessIndex) {
-        for (int b = 0; b < 4; b++)
+        for (int b = 0; b < 5; b++)
             if (activeBlessesIndexes[b] == blessIndex)
                 return b;
         return -1;
@@ -235,7 +238,7 @@ public class CharacterBlessesUI {
 
     private int getEmptyBlessSpot() {
         int spot = -1;
-        for (int b = 0; b < 4; b++)
+        for (int b = 0; b < 5; b++)
             if (activeBlessesIndexes[b] == -1) {
                 spot = b;
                 break;
