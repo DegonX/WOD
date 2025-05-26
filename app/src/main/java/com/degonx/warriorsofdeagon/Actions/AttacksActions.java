@@ -1,9 +1,5 @@
 package com.degonx.warriorsofdeagon.Actions;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
-
 import com.degonx.warriorsofdeagon.Enums.AttacksEnums.AttacksAction;
 import com.degonx.warriorsofdeagon.Enums.AttacksEnums.AttacksCount;
 import com.degonx.warriorsofdeagon.Enums.AttacksEnums.AttacksDirection;
@@ -138,8 +134,6 @@ public class AttacksActions {
 
     //increase or decrease damage by char element and mob type
     private static float changeDamageByType(Elements charEle, MobsType mobType) {
-
-        Log.i(TAG, "Char Element: " + charEle + ", Mob Type: " + mobType);
 
         if (charEle == Elements.Fire && mobType == MobsType.Darkness || charEle == Elements.Fire && mobType == MobsType.Metal || charEle == Elements.Ice && mobType == MobsType.Water ||
                 charEle == Elements.Energy && mobType == MobsType.Earth || charEle == Elements.Energy && mobType == MobsType.Lightning || charEle == Elements.Energy && mobType == MobsType.Light ||

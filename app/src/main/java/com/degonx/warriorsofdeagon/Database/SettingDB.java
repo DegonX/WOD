@@ -38,7 +38,7 @@ public class SettingDB extends SQLiteOpenHelper {
                     + KEY_USERNAME + " STRING,"
                     + KEY_SAVEDUSER + " INTEGER,"
                     + KEY_MUTEBGM + " INTEGER,"
-                    + KEY_MUTESOUND + " INTAGER" + ")";
+                    + KEY_MUTESOUND + " INTEGER" + ")";
             db.execSQL(CREATE_TABLE_SETTING);
         }
     }

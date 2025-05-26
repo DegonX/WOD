@@ -13,6 +13,7 @@ public enum Blesses {
     HP, Attack, Critical Rate @Chee
     HP, Defence, Bonus XP @Gent
     MP, MP, Critical Damage @Ador
+    MP, Defence, Critical Rate @Imma
     Attack, Attack, Critical Damage @Ener
     Attack, Defence, Bonus XP @Frie
     Attack, MP, Bonus XP @Play
@@ -33,6 +34,7 @@ public enum Blesses {
     Play(R.color.play, new Stats[]{Stats.ATTACK, Stats.MP, Stats.BONUS_XP}),
     Gent(R.color.gent, new Stats[]{Stats.HP, Stats.DEFENCE, Stats.BONUS_XP}),
     Kind(R.color.kind, new Stats[]{Stats.HP, Stats.MP, Stats.DEFENCE}),
+    Imma(R.color.imma, new Stats[]{Stats.MP, Stats.DEFENCE, Stats.CRITICAL_RATE}),
     Boyi(R.color.boyi, new Stats[]{Stats.ATTACK, Stats.CRITICAL_RATE, Stats.CRITICAL_DAMAGE}),
     Tend(R.color.tend, new Stats[]{Stats.HP, Stats.HP, Stats.CRITICAL_DAMAGE});
 

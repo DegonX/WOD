@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 @SuppressLint({"SetTextI18n", "DiscouragedApi"})
@@ -61,7 +59,7 @@ public class Lobby extends Activity {
 
         //load characters from database
         accountCharacters = charDB.getCharsForLobby(accountID);
-        Log.i(TAG, "accountID:" + accountID);
+        Log.i("LOG_ACCOUNT_ID", "accountID:" + accountID);
 
         lobbyPage();
 

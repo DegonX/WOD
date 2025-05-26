@@ -34,8 +34,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
-
 public class Game extends Activity implements PopupMenu.OnMenuItemClickListener {
 
     private final CharactersDB charDB = new CharactersDB(this);
@@ -70,8 +68,7 @@ public class Game extends Activity implements PopupMenu.OnMenuItemClickListener 
         int charID = mIntent.getIntExtra("charID", 0);
         Char = charDB.getCharacterData(charID);
         Char.setAccDB(accDB);
-        Log.i(TAG, "CharID:" + charID);
-
+        Log.i("LOG_CHARACTER_ID", "CharID:" + charID);
 
         //load and set game at start
         Char.setMobsList(activeMobsList);

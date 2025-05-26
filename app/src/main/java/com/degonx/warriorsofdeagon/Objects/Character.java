@@ -1,7 +1,5 @@
 package com.degonx.warriorsofdeagon.Objects;
 
-import static android.content.ContentValues.TAG;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.CountDownTimer;
@@ -265,7 +263,7 @@ public class Character {
         //set weapon mastery bonus damage
         WeaponAttacks.bonusDamage = ((1 + weaponMasteryLevel / 100f) * (float) (1 + charLevel / 10));
 
-        Log.i(TAG, "weapon:" + charCurrentWeaponType + ", weapon mastery:" + getWeaponMasteryLevel(charCurrentWeaponType.weaponSkill) + ", weapon damage:" + equippedWeaponAttack);
+        Log.i("LOG_WEAPON", "weapon:" + charCurrentWeaponType + ", weapon mastery:" + getWeaponMasteryLevel(charCurrentWeaponType.weaponSkill) + ", weapon damage:" + equippedWeaponAttack);
 
         //set weapon sound
         game.setWeaponSound(charCurrentWeaponType);
@@ -280,7 +278,7 @@ public class Character {
         //set element attack bonus damage
         ElementAttacks.bonusDamage = (float) ((1 + charSkillsList.get(1).get(charCurrentElementIndex).skillLevel / 100) * (1 + charLevel / 8));
 
-        Log.i(TAG, "element:" + charCurrentElementType + ", element knowledge:" + charSkillsList.get(1).get(charCurrentElementIndex).skillLevel);
+        Log.i("LOG_ELEMENT", "element:" + charCurrentElementType + ", element knowledge:" + charSkillsList.get(1).get(charCurrentElementIndex).skillLevel);
 
         //show element attack button by knowledge level
         charUI.setElementView(element, charSkillsList.get(1).get(charCurrentElementIndex));

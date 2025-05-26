@@ -1,7 +1,5 @@
 package com.degonx.warriorsofdeagon.UI;
 
-import static android.content.ContentValues.TAG;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -247,7 +245,7 @@ public class GameUI {
                 addRemoveFromGameView(droppedItemIMG, false);
             }, 30000);
         } else
-            Log.e(TAG, "item not found");
+            Log.e("LOG_ITEM", "item not found");
     }
 
     //remove all drops from the area
